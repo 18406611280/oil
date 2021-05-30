@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbInWarehouseMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbInWarehouse">
+    <id column="id" property="id" />
+    <result column="in_warehouse_code" property="inWarehouseCode" />
+    <result column="grain_organize_id" property="grainOrganizeId" />
+    <result column="grain_organize_name" property="grainOrganizeName" />
+    <result column="organize_name" property="organizeName" />
+    <result column="organize_id" property="organizeId" />
+    <result column="warehousing_type" property="warehousingType" />
+    <result column="batch_code" property="batchCode" />
+    <result column="batch_id" property="batchId" />
+    <result column="storehouse_id" property="storehouseId" />
+    <result column="storehouse_name" property="storehouseName" />
+    <result column="grain_depot_id" property="grainDepotId" />
+    <result column="grain_depot_name" property="grainDepotName" />
+    <result column="grade" property="grade" />
+    <result column="variety_id" property="varietyId" />
+    <result column="variety" property="variety" />
+    <result column="child_varieties" property="childVarieties" />
+    <result column="quantity" property="quantity" />
+    <result column="price" property="price" />
+    <result column="producing_area" property="producingArea" />
+    <result column="producing_province" property="producingProvince" />
+    <result column="producing_city" property="producingCity" />
+    <result column="country" property="country" />
+    <result column="packing" property="packing" />
+    <result column="packing_material" property="packingMaterial" />
+    <result column="packing_number" property="packingNumber" />
+    <result column="particular_year" property="particularYear" />
+    <result column="remark" property="remark" />
+    <result column="state" property="state" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_id" property="updateId" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, in_warehouse_code, grain_organize_id, grain_organize_name, organize_name, organize_id, 
+    warehousing_type, batch_code, batch_id, storehouse_id, storehouse_name, grain_depot_id, 
+    grain_depot_name, grade, variety_id, variety, child_varieties, quantity, price, producing_area,
+    producing_province, producing_city, country, packing, packing_material, packing_number, 
+    particular_year, remark, state, del_flag, create_id, create_by, create_time, update_by,
+    update_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from public.tb_in_warehouse
+    where id = #{id} and del_flag = '0'
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.grainoil.system.domain.TbInWarehouse" useGeneratedKeys="true">
+    insert into public.tb_in_warehouse (in_warehouse_code, grain_organize_id, apply_time,
+      grain_organize_name, organize_name, organize_id, 
+      warehousing_type, batch_code, batch_id, 
+      storehouse_id, storehouse_name, grain_depot_id,
+      grain_depot_name, grade, variety_id, variety,
+      child_varieties, quantity, price, 
+      producing_area, producing_province,
+      country, packing, packing_material, 
+      packing_number, particular_year, remark, 
+      state, del_flag, create_id,
+      create_by, create_time, update_by, 
+      update_id, update_time)
+    values (#{inWarehouseCode}, #{grainOrganizeId}, #{applyTime},
+      #{grainOrganizeName}, #{organizeName}, #{organizeId},
+      #{warehousingType}, #{batchCode}, #{batchId},
+      #{storehouseId}, #{storehouseName}, #{grainDepotId},
+      #{grainDepotName}, #{grade}, #{varietyId}, #{variety},
+      #{childVarieties}, #{quantity}, #{price},
+      #{producingArea}, #{producingProvince},
+      #{country}, #{packing}, #{packingMaterial},
+      #{packingNumber}, #{particularYear}, #{remark},
+      #{state}, '0', #{createId},
+      #{createBy}, now(), #{updateBy},
+      #{updateId}, now())
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbInWarehouse">
+    update public.tb_in_warehouse
+    set in_warehouse_code = #{inWarehouseCode},
+      warehousing_type = #{warehousingType},
+      batch_code = #{batchCode},
+      batch_id = #{batchId},
+      storehouse_id = #{storehouseId},
+      storehouse_name = #{storehouseName},
+      grain_depot_id = #{grainDepotId},
+      grain_depot_name = #{grainDepotName},
+      grade = #{grade},
+      variety = #{variety},
+      child_varieties = #{childVarieties},
+      quantity = #{quantity},
+      price = #{price},
+      producing_area = #{producingArea},
+      producing_province = #{producingProvince},
+      country = #{country},
+      packing = #{packing},
+      packing_material = #{packingMaterial},
+      packing_number = #{packingNumber},
+      particular_year = #{particularYear},
+      apply_time = #{applyTime},
+      remark = #{remark},
+      state = #{state},
+      update_by = #{updateBy},
+      update_id = #{updateId},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER} and del_flag = '0'
+  </update>
+  <select id="list" resultType="InWarehouseListVo">
+    SELECT tiw.id, tiw.in_warehouse_code, tiw.warehousing_type, tiw.batch_code, tiw.organize_name, tiw.grain_depot_name, tiw.storehouse_name,
+    tiw.variety, tiw.quantity, tiw.packing, tiw.particular_year, tiw.state,
+    CASE tiw.producing_area WHEN '1' THEN concat('国产-', tdd.dict_label) WHEN '2' THEN concat('进口-', tdd2.dict_label) ELSE '-' END producingArea,
+    concat(min(tiwd.warehouse_date), ' - ', max(tiwd.warehouse_date)) inTime,
+    tiw.apply_time
+    FROM public.tb_in_warehouse tiw LEFT JOIN public.tb_dict_data tdd ON tiw.producing_province = tdd.dict_value AND dict_type = 18 AND tdd.status = '0'
+    LEFT JOIN public.tb_dict_data tdd2 ON tiw.country = tdd2.dict_value AND tdd.dict_type = 19 AND tdd2.status = '0'
+    LEFT JOIN public.tb_in_warehouse_detailed tiwd ON tiw.id = tiwd.in_warehouse_id AND tiwd.del_flag = '0' AND tiwd.is_audit = '2'
+    WHERE tiw.del_flag = '0' AND tiw.grain_organize_id = #{lq}
+    <if test="inWarehouse.inWarehouseCode != null and inWarehouse.inWarehouseCode != ''">
+      AND tiw.in_warehouse_code LIKE concat('%', #{inWarehouse.inWarehouseCode}, '%')
+    </if>
+    <if test="inWarehouse.grainDepotId != null">
+      AND tiw.grain_depot_id = #{inWarehouse.grainDepotId}
+    </if>
+    <if test="inWarehouse.storehouseId != null">
+      AND tiw.storehouse_id = #{inWarehouse.storehouseId}
+    </if>
+    <if test="inWarehouse.state != null and inWarehouse.state != ''">
+      AND tiw.state = #{inWarehouse.state}
+    </if>
+    <if test="inWarehouse.beginTime != null">
+      AND  #{inWarehouse.beginTime} >= tiw.apply_time
+    </if>
+    <if test="inWarehouse.endTime != null">
+      AND tiw.apply_time >= #{inWarehouse.endTime}
+    </if>
+    <if test='"1" == organizeType or "2" == organizeType'>
+      <if test="inWarehouse.organizeId != null">
+        AND tiw.organize_id = #{inWarehouse.organizeId}
+      </if>
+    </if>
+    <if test='"2" == organizeType'>
+      <if test="organizeId != lq">
+        AND tiw.grain_depot_id IN (SELECT tgd.grain_depot_id FROM public.tb_grain_depot tgd WHERE tgd.del_flag = '0' AND tgd.grain_depot_state = '0' AND tgd.center_id = #{lq})
+      </if>
+    </if>
+    <if test='"5" == organizeType'>
+      AND tiw.organize_id = #{organizeId}
+    </if>
+    <if test="inWarehouse.batchCode != null and inWarehouse.batchCode != ''">
+      AND tiw.batch_code LIKE concat('%', #{inWarehouse.batchCode}, '%')
+    </if>
+    <if test="inWarehouse.varietyId != null">
+      AND tiw.variety_id = #{inWarehouse.varietyId}
+    </if>
+    <if test="inWarehouse.warehousingType != null and inWarehouse.warehousingType != ''">
+      AND tiw.warehousing_type = #{inWarehouse.warehousingType}
+    </if>
+    GROUP BY tiw.id, tdd.dict_label, tdd2.dict_label
+    ORDER BY tiw.create_time DESC
+  </select>
+  <select id="check" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_storage_contract tsc LEFT JOIN public.tb_storage_contract_detailed tscd ON tsc.id = tscd.stroage_contract_id
+      LEFT JOIN public.tb_storehouse ts ON ts.grain_depot_id = tscd.grain_depot_id
+    WHERE tsc.del_flag = '0' AND ts.del_flag = '0' AND ts.storehouse_state = '0' AND tsc.id = #{batchId} AND tscd.grain_depot_id = #{grainDepotId}
+    AND tscd.variety_id = #{varietyId} AND ts.storehouse_id = #{storehouseId}
+  </select>
+  <update id="changState">
+    UPDATE public.tb_in_warehouse SET state = #{state}, update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE del_flag = '0' AND id = #{id}
+  </update>
+  <select id="getInsertButton" resultType="com.grainoil.system.domain.vo.in_warehouse.ListVo">
+    SELECT tiw.grain_depot_id, tiw.grain_depot_name, tiw.storehouse_id, tiw.storehouse_name, tp.pile_id heapId, tp.pile_code heapName,
+    tcp.pile_id childHeapId, tcp.pile_code childHeapCode,  CASE WHEN sum(tiwd.quantity) THEN sum(tiwd.quantity) ELSE 0 END previousStock,
+    CASE WHEN tp.is_split = '0' THEN tp.pile_capacity ELSE tcp.pile_capacity END capacity
+    FROM public.tb_in_warehouse tiw LEFT JOIN public.tb_pile tp ON tiw.storehouse_id = tp.storehouse_id
+    LEFT JOIN public.tb_child_pile tcp ON tp.pile_id = tcp.parent_id AND tcp.del_flag = '0'
+    LEFT JOIN public.tb_in_warehouse_detailed tiwd ON CASE WHEN tcp.pile_id IS NULL THEN tiwd.heap_id = tp.pile_id ELSE tiwd.child_heap_id = tcp.pile_id END AND tiwd.del_flag = '0'
+    WHERE tiw.del_flag = '0' AND tp.del_flag = '0' AND tp.pile_state = '0' AND tiw.id = #{id}
+    GROUP BY tiw.grain_depot_id, tiw.grain_depot_name, tiw.storehouse_id, tiw.storehouse_name, tp.pile_id, tp.pile_code,
+    tcp.pile_id, tcp.pile_code
+  </select>
+  <select id="getNextId" resultType="java.lang.Long">
+    SELECT id FROM public.tb_in_warehouse WHERE del_flag = '0' AND state = #{code} AND organize_id = #{organizeId} AND grain_organize_id = #{lq}
+  </select>
+    <select id="getNextId2" resultType="java.lang.Long">
+        SELECT tiw.id FROM public.tb_in_warehouse tiw LEFT JOIN public.tb_in_warehouse_detailed tiwd ON tiw.id = tiwd.in_warehouse_id
+        WHERE tiw.organize_id = #{organizeId} AND tiw.del_flag = '0' AND tiwd.is_audit = #{code} AND tiwd.del_flag = '0' AND tiw.grain_organize_id = #{lq}
+    </select>
+</mapper>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbBatchPlanMapper">
+
+    <resultMap type="com.grainoil.system.domain.TbBatchPlan" id="TbBatchPlanResult">
+        <result property="id"    column="id"    />
+        <result property="sort"    column="sort"    />
+        <result property="annualPlan"    column="annual_plan"    />
+        <result property="relocationId"    column="relocation_id"    />
+        <result property="organizeId"    column="organize_id"    />
+        <result property="batchCode"    column="batch_code"    />
+        <result property="state"    column="state"    />
+        <result property="isAdvanceEnd"    column="is_advance_end"    />
+        <result property="rotationType"    column="rotation_type"    />
+        <result property="grainOrganizeId"    column="grain_organize_id"    />
+        <result property="applyTime"    column="apply_time"    />
+        <result property="applyId"    column="apply_id"    />
+        <result property="grainOrganizeName"    column="grain_organize_name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTbBatchPlanVo">
+        select id,sort, annual_plan, relocation_id, organize_id, batch_code, state, is_advance_end, rotation_type, grain_organize_id, apply_time, apply_id, grain_organize_name, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from public.tb_batch_plan
+    </sql>
+
+    <select id="selectTbBatchPlanList" parameterType="com.grainoil.system.domain.TbBatchPlan" resultType="com.grainoil.system.domain.TbBatchPlan">
+        select
+              tbp.id,
+              tbp.annual_plan,
+              tbp.relocation_id,
+              tbp.organize_id,
+              tbp.batch_code,
+              tbp.state,
+              tbp.is_advance_end,
+              tbp.rotation_type,
+              tbp.grain_organize_id,
+              tbp.apply_time,
+              tbp.apply_id,
+              tbp.grain_organize_name,
+              tbp.del_flag,
+              tbp.create_id,
+              tbp.create_by,
+              tbp.create_time,
+              tbp.update_id,
+              tbp.update_by,
+              tbp.update_time,
+              tbpi.grain_depot_name grainDepotName,
+              tbpi.foodstuff_tpye foodstuffTpye,
+              tbpi.out_stock outStock,
+              tbpi.grain_depot_name2 grainDepotName2,
+              tbpi.foodstuff_tpye2 foodstuffTpye2,
+              tbpi.in_stock inStock
+        from
+              public.tb_batch_plan tbp
+        left join public.tb_batch_plan_info tbpi on tbpi.batch_plan_id = tbp.id
+        left join public.tb_organize to2 ON  to2.del_flag = '0' AND to2.organize_state = '0'
+
+        <where>
+            <if test="annualPlan != null "> and tbp.annual_plan = #{annualPlan}</if>
+            <if test="relocationId != null "> and tbp.relocation_id = #{relocationId}</if>
+            <if test="organizeId != null "> and tbp.organize_id = #{organizeId}</if>
+            <if test="batchCode != null  and batchCode != ''"> and tbp.batch_code = #{batchCode}</if>
+            <if test="state != null  and state != ''"> and tbp.state = #{state}</if>
+            <if test="isAdvanceEnd != null  and isAdvanceEnd != ''"> and tbp.is_advance_end = #{isAdvanceEnd}</if>
+            <if test="rotationType != null  and rotationType != ''"> and tbp.rotation_type = #{rotationType}</if>
+            <if test="grainOrganizeId != null "> and tbp.grain_organize_id = #{grainOrganizeId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(tbp.apply_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(tbp.apply_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="applyId != null "> and tbp.apply_id = #{applyId}</if>
+            <if test="grainOrganizeName != null  and grainOrganizeName != ''"> and tbp.grain_organize_name like concat('%', #{grainOrganizeName}, '%')</if>
+            <if test="createId != null "> and tbp.create_id = #{createId}</if>
+            <if test="updateId != null "> and tbp.update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="select" resultType="com.grainoil.system.domain.vo.rotate.BatchPlanEntity">
+        select
+              tbp.id,
+              tbp.sort,
+              tbp.annual_plan,
+              tbp.relocation_id,
+              tbp.organize_id,
+              tbp.batch_code,
+              tbp.state,
+              tbp.is_advance_end,
+              tbp.rotation_type,
+              tbp.grain_organize_id,
+              tbp.apply_time,
+              tbp.apply_id,
+              tbp.grain_organize_name,
+              tbp.del_flag,
+              tbp.create_id,
+              tbp.create_by,
+              tbp.create_time,
+              tbp.update_id,
+              tbp.update_by,
+              tbp.update_time,
+              tbpi.grain_depot_name grainDepotName,
+              tbpi.foodstuff_tpye foodstuffTpye,
+              tbpi.out_stock outStock,
+              tbpi.grain_depot_name2 grainDepotName2,
+              tbpi.foodstuff_tpye2 foodstuffTpye2,
+              tbpi.in_stock inStock
+        from
+             public.tb_batch_plan tbp
+        left join public.tb_batch_plan_info tbpi on tbpi.batch_plan_id = tbp.id
+        left join public.tb_organize to2 ON tbp.grain_organize_id = to2.organize_id and to2.del_flag = '0' AND to2.organize_state = '0'
+        <where>
+            <if test="organizeId != null "> and tbp.organize_id = #{organizeId}</if>
+            <if test="batchPlanPageDto.batchCode != null  and batchPlanPageDto.batchCode != ''"> and tbp.batch_code = #{batchPlanPageDto.batchCode}</if>
+            <if test="batchPlanPageDto.state != null  and batchPlanPageDto.state != ''"> and tbp.state = #{batchPlanPageDto.state}</if>
+            <if test="batchPlanPageDto.rotationType != null  and batchPlanPageDto.rotationType != ''"> and tbp.rotation_type = #{batchPlanPageDto.rotationType}</if>
+            <!--            <if test="batchPlanPageDto.grainOrganizeId != null "> and tbp.grain_organize_id = #{batchPlanPageDto.grainOrganizeId}</if>-->
+            <!--            <if test="params.beginTime != null and params.beginTime != ''">&lt;!&ndash; 开始时间检索 &ndash;&gt;-->
+            <!--                AND date_format(tbp.apply_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+            <!--            </if>-->
+            <!--            <if test="params.endTime != null and params.endTime != ''">&lt;!&ndash; 结束时间检索 &ndash;&gt;-->
+            <!--                AND date_format(tbp.apply_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+            <!--            </if>-->
+            <!--            <if test="batchPlanPageDto.grainOrganizeName != null  and batchPlanPageDto.grainOrganizeName != ''"> and tbp.grain_organize_name like concat('%', #{batchPlanPageDto.grainOrganizeName}, '%')</if>-->
+        </where>
+    </select>
+
+    <select id="list"  resultType="com.grainoil.system.domain.vo.rotate.BatchPlanEntity">
+        select
+              tbp.id,
+              tbp.sort,
+              tbp.annual_plan,
+              tbp.relocation_id,
+              tbp.organize_id,
+              tbp.batch_code,
+              tbp.state,
+              tbp.is_advance_end,
+              tbp.rotation_type,
+              tbp.grain_organize_id,
+              tbp.apply_time,
+              tbp.apply_id,
+              tbp.grain_organize_name,
+              tbp.del_flag,
+              tbp.create_id,
+              tbp.create_by,
+              tbp.create_time,
+              tbp.update_id,
+              tbp.update_by,
+              tbp.update_time,
+              tbpi.grain_depot_name grainDepotName,
+              tbpi.foodstuff_tpye foodstuffTpye,
+              tbpi.out_stock outStock,
+              tbpi.grain_depot_name2 grainDepotName2,
+              tbpi.foodstuff_tpye2 foodstuffTpye2,
+              tbpi.in_stock inStock,
+              tbpi.storehouse_id storehouseId
+        from
+             public.tb_batch_plan tbp
+        left join public.tb_batch_plan_info tbpi on tbpi.batch_plan_id = tbp.id
+        <where>
+            tbp.del_flag = '0' AND tbp.grain_organize_id = #{lq}
+            <if test="storehouseId != null "> and tbpi.storehouse_id = #{batchPlanPageDto.storehouseId}</if>
+            <if test="batchPlanPageDto.batchCode != null  and batchPlanPageDto.batchCode != ''"> and tbp.batch_code = #{batchPlanPageDto.batchCode}</if>
+            <if test="batchPlanPageDto.state != null  and batchPlanPageDto.state != ''"> and tbp.state = #{batchPlanPageDto.state}</if>
+            <if test="batchPlanPageDto.rotationType != null  and batchPlanPageDto.rotationType != ''"> and tbp.rotation_type = #{batchPlanPageDto.rotationType}</if>
+            <if test='"1" == organizeType or "2" == organizeType'>
+                <if test="batchPlanPageDto.organizeId != null">
+                    AND tbp.organize_id = #{batchPlanPageDto.organizeId}
+                </if>
+            </if>
+            <if test='"2" == organizeType'>
+                <if test="organizeId != lq">
+                    AND tbpi.grain_depot_id IN (SELECT tgd.grain_depot_id FROM public.tb_grain_depot tgd WHERE tgd.del_flag = '0' AND tgd.grain_depot_state = '0' AND tgd.center_id = #{lq})
+                </if>
+            </if>
+            <if test='"5" == organizeType'>
+                AND tbp.organize_id = #{organizeId}
+            </if>
+<!--            <if test="batchPlanPageDto.grainOrganizeId != null "> and tbp.grain_organize_id = #{batchPlanPageDto.grainOrganizeId}</if>-->
+<!--            <if test="params.beginTime != null and params.beginTime != ''">&lt;!&ndash; 开始时间检索 &ndash;&gt;-->
+<!--                AND date_format(tbp.apply_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+<!--            </if>-->
+<!--            <if test="params.endTime != null and params.endTime != ''">&lt;!&ndash; 结束时间检索 &ndash;&gt;-->
+<!--                AND date_format(tbp.apply_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+<!--            </if>-->
+<!--            <if test="batchPlanPageDto.grainOrganizeName != null  and batchPlanPageDto.grainOrganizeName != ''"> and tbp.grain_organize_name like concat('%', #{batchPlanPageDto.grainOrganizeName}, '%')</if>-->
+        </where>
+    </select>
+
+    <select id="selectTbBatchPlanById" parameterType="Long" resultMap="TbBatchPlanResult">
+        <include refid="selectTbBatchPlanVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbBatchPlan" parameterType="TbBatchPlan" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_batch_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="annualPlan != null">annual_plan,</if>
+            <if test="sort != null">sort,</if>
+            <if test="relocationId != null">relocation_id,</if>
+            <if test="organizeId != null">organize_id,</if>
+            <if test="batchCode != null">batch_code,</if>
+            <if test="state != null">state,</if>
+            <if test="isAdvanceEnd != null">is_advance_end,</if>
+            <if test="rotationType != null">rotation_type,</if>
+            <if test="grainOrganizeId != null">grain_organize_id,</if>
+            <if test="applyTime != null">apply_time,</if>
+            <if test="applyId != null">apply_id,</if>
+            <if test="grainOrganizeName != null">grain_organize_name,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="annualPlan != null">#{annualPlan},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="relocationId != null">#{relocationId},</if>
+            <if test="organizeId != null">#{organizeId},</if>
+            <if test="batchCode != null">#{batchCode},</if>
+            <if test="state != null">#{state},</if>
+            <if test="isAdvanceEnd != null">#{isAdvanceEnd},</if>
+            <if test="rotationType != null">#{rotationType},</if>
+            <if test="grainOrganizeId != null">#{grainOrganizeId},</if>
+            <if test="applyTime != null">#{applyTime},</if>
+            <if test="applyId != null">#{applyId},</if>
+            <if test="grainOrganizeName != null">#{grainOrganizeName},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbBatchPlan" parameterType="TbBatchPlan">
+        update tb_batch_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="annualPlan != null">annual_plan = #{annualPlan},</if>
+            <if test="sort != null">annual_plan = #{sort},</if>
+            <if test="relocationId != null">relocation_id = #{relocationId},</if>
+            <if test="organizeId != null">organize_id = #{organizeId},</if>
+            <if test="batchCode != null">batch_code = #{batchCode},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="isAdvanceEnd != null">is_advance_end = #{isAdvanceEnd},</if>
+            <if test="rotationType != null">rotation_type = #{rotationType},</if>
+            <if test="grainOrganizeId != null">grain_organize_id = #{grainOrganizeId},</if>
+            <if test="applyTime != null">apply_time = #{applyTime},</if>
+            <if test="applyId != null">apply_id = #{applyId},</if>
+            <if test="grainOrganizeName != null">grain_organize_name = #{grainOrganizeName},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbBatchPlanById" parameterType="Long">
+        delete from tb_batch_plan where id = #{id}
+    </delete>
+
+    <delete id="deleteTbBatchPlanByIds" parameterType="String">
+        delete from tb_batch_plan where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateStateByStateAndId">
+        update public.tb_batch_plan set state = #{state} where id = #{id}
+    </update>
+
+    <update id="approveBatchPlan">
+        update public.tb_batch_plan set state = #{state} where id = #{id}
+    </update>
+
+    <select id="getAnnualPlanDetail" resultType="com.grainoil.system.domain.vo.rotate.AnnualPlanForBatchPlan">
+        select
+            tap.annual_batch_code,
+            tapd.grainDepot_id,
+            tapd.grain_depot_name,
+            tapd.variety,
+            tapd.rotation_quantity,
+            SUM(tbpi.out_stock),
+            tapd.quantity_storage
+        from
+             public.tb_annual_plan tap
+        left join public.tb_annual_plan_detailed tapd on tap.id = tapd.annual_plan
+        left join public.tb_annual_plan_depot_detailed tapdd on tapd.id = tapdd.annual_plan_detailed_id
+        left join public.tb_batch_plan tbp on tap.id = tbp.annual_plan
+        left join public.tb_batch_plan_info tbpi  on tbp.id = tbpi.batch_plan_id
+        where
+              tap.particular_year = #{year}
+          and tap.state = '3'
+          and tbp.state = '8'
+          and tbpi.grain_depot_id =  tapd.grainDepot_id
+          and tbpi.foodstuff_tpye = tapd.variety
+        <if test='"2" == organizeType'>
+            <if test="organizeId != lq">
+                AND tapd.grain_depot_id IN (SELECT tgd.grain_depot_id FROM public.tb_grain_depot tgd WHERE tgd.del_flag = '0' AND tgd.grain_depot_state = '0' AND tgd.center_id = #{lq})
+            </if>
+        </if>
+        <if test='"5" == organizeType'>
+            AND tap.organize_id = #{organizeId}
+        </if>
+        group by tapd.variety_id
+    </select>
+
+</mapper>

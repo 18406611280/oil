@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbCompanyStorageMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbCompanyStorage">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="organize_id" property="organizeId" />
+    <result column="store_id" property="storeId" />
+    <result column="store_type" property="storeType" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, organize_id, store_id, store_type, del_flag, create_id, create_by, create_time, 
+    update_id, update_by, update_time
+  </sql>
+  <insert id="insertGrainDepot" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into public.tb_company_storage (organize_id, store_id, store_type,
+      del_flag, create_id, create_by, create_time, update_id, update_by,
+      update_time) values
+    <foreach collection="companies" item="item" open="(" close=")" separator=",">
+      #{item}, #{depot.belongId}, '1', '0', #{depot.createId}, #{depot.createBy},
+      now(), #{depot.updateId}, #{depot.updateBy}, now()
+    </foreach>
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbCompanyStorage">
+    update tb_company_storage
+    set organize_id = #{organizeId},
+      store_id = #{storeId},
+      store_type = #{storeType},
+      del_flag = #{delFlag},
+      update_id = #{updateId},
+      update_by = #{updateBy},
+      update_time = #{updateTime}
+    where id = #{id}
+  </update>
+  <select id="count" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_company_storage WHERE del_flag= '0' AND store_id = #{id} AND store_type = #{type}
+  </select>
+  <select id="checkGrainDepotUse" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_company_storage WHERE del_flag = '0' AND store_id = #{grainDepotId} AND store_type = '1' AND organize_id = #{organizeId}
+  </select>
+  <select id="getUseCompanies" resultType="com.grainoil.system.domain.vo.point_management.OrganizeVo">
+    SELECT t.organize_id, t.organize_name, t.organize_credit_code, t.organize_position, t.organize_region, t.organize_person, t.service_object, t.organize_type,
+    t.organize_phonenumber, t.remark, group_concat(t2.user_id) id, group_concat(t2.login_name) name FROM
+    (
+        SELECT to2.* FROM public.tb_company_storage tcs LEFT JOIN public.tb_organize to2 ON tcs.organize_id = to2.organize_id
+        WHERE tcs.store_id = #{grainDepotId} AND tcs.store_type = '1' AND tcs.del_flag = '0' AND to2.del_flag = '0' AND to2.organize_state = '0'
+    ) t LEFT JOIN (
+        SELECT tu.organize_id, tu.user_id, tu.login_name
+        FROM public.tb_man_storage tms LEFT JOIN public.tb_user tu ON tms.person_id = tu.user_id
+        WHERE tms.del_flag = '0' AND store_type = '1' AND store_id = #{grainDepotId} AND tu.del_flag = '0' AND tu.state = '0'
+    ) t2
+    ON t.organize_id = t2.organize_id
+    GROUP BY t.organize_id, t.organize_name, t.organize_credit_code, t.organize_position, t.organize_region, t.organize_person, t.service_object, t.organize_type,
+      t.organize_phonenumber, t.remark
+  </select>
+  <select id="getUseCompanies2" resultType="com.grainoil.system.domain.vo.point_management.OrganizeVo">
+    SELECT t.organize_id, t.organize_name, t.organize_credit_code, t.organize_position, t.organize_region, t.organize_person, t.service_object, t.organize_type,
+    t.organize_phonenumber, t.remark, group_concat(t2.user_id) id, group_concat(t2.login_name) name FROM
+    (
+        SELECT to2.* FROM public.tb_company_storage tcs LEFT JOIN public.tb_organize to2 ON tcs.organize_id = to2.organize_id
+        WHERE tcs.store_id = #{storehouseId} AND tcs.store_type = '2' AND tcs.del_flag = '0' AND to2.organize_state = '0' AND to2.del_flag = '0'
+    ) t LEFT JOIN (
+        SELECT tu.organize_id, tu.user_id, tu.login_name
+        FROM public.tb_man_storage tms LEFT JOIN public.tb_user tu ON tms.person_id = tu.user_id
+        WHERE tms.del_flag = '0' AND store_type = '2' AND store_id = #{storehouseId} AND tu.del_flag = '0' AND tu.state = '0'
+    ) t2
+    ON t.organize_id = t2.organize_id
+    GROUP BY t.organize_id, t.organize_name, t.organize_credit_code, t.organize_position, t.organize_region, t.organize_person, t.service_object, t.organize_type,
+      t.organize_phonenumber, t.remark
+  </select>
+    <select id="checkStorehouseUse" resultType="java.lang.Integer">
+      SELECT count(1) FROM public.tb_company_storage WHERE del_flag = '0' AND store_id = #{id} AND store_type = '2' AND organize_id = #{organizeId}
+    </select>
+  <select id="checkPileUse" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_company_storage WHERE del_flag = '0' AND store_id = #{id} AND store_type = '3' AND organize_id = #{organizeId}
+  </select>
+    <select id="hasInventory" resultType="java.lang.Long">
+      SELECT tcs.organize_id FROM public.tb_company_storage tcs LEFT JOIN public.tb_grain_actual_inventory tgai ON tcs.store_id = tgai.storehouse_id AND tgai.organize_id = #{organizeId}
+      WHERE tcs.store_type = #{type} AND tcs.del_flag = '0' AND tgai.del_flag = '0' AND tgai.id IS NOT NULL
+    </select>
+  <update id="deleteNotIn">
+    UPDATE public.tb_company_storage SET del_flag = '1', update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE store_id = #{id} AND store_type = #{type}
+    <if test="list != null and list.size() != 0">
+      AND organize_id NOT IN (
+        <foreach collection="list" item="item" separator=",">
+          #{item}
+        </foreach>
+      )
+    </if>
+  </update>
+  <insert id="batchInsert">
+    INSERT INTO public.tb_company_storage(organize_id, store_id, store_type, del_flag, create_id, create_by, create_time, update_id, update_by, update_time) VALUES
+    <foreach collection="organizeIds" separator="," item="item">
+      (#{item}, #{storehouseId}, #{type}, '0', #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+    </foreach>
+  </insert>
+  <select id="getOrganizeVo" resultType="com.grainoil.system.domain.vo.point_management.OrganizeVo">
+    SELECT t.organize_id, t.organize_name, t.organize_credit_code, t.organize_position, t.organize_region, t.organize_person, t.service_object, t.organize_type,
+    t.organize_phonenumber, t.remark, group_concat(t2.user_id) id, group_concat(t2.login_name) name FROM
+    (
+    SELECT to2.* FROM public.tb_company_storage tcs LEFT JOIN public.tb_organize to2 ON tcs.organize_id = to2.organize_id
+    WHERE tcs.store_id = #{id} AND tcs.store_type = '1' AND tcs.del_flag = '0' AND to2.del_flag = '0' AND to2.organize_state = '0'
+    ) t LEFT JOIN (
+    SELECT tu.organize_id, tu.user_id, tu.login_name
+    FROM public.tb_man_storage tms LEFT JOIN public.tb_user tu ON tms.person_id = tu.user_id
+    WHERE tms.del_flag = '0' AND store_type = '1' AND store_id = #{id} AND tu.del_flag = '0' AND tu.state = '0'
+    ) t2
+    ON t.organize_id = t2.organize_id
+    <if test="organizeId != null">
+      WHERE t.organize_id = #{organizeId}
+    </if>
+    GROUP BY t.organize_id, t.organize_name, t.organize_credit_code, t.organize_position, t.organize_region, t.organize_person, t.service_object, t.organize_type,
+    t.organize_phonenumber, t.remark
+  </select>
+  <select id="getGrainDepotList" resultType="LeafNode">
+    SELECT tcs.store_id value, tgd.grain_depot_name label
+    FROM public.tb_company_storage tcs LEFT JOIN public.tb_grain_depot tgd ON tcs.store_id = tgd.grain_depot_id AND tgd.del_flag = '0'
+    WHERE tcs.del_flag = '0' AND tcs.store_type = '1' AND tcs.organize_id = #{organizeId}
+  </select>
+  <select id="getGrainDepotIds" resultType="java.lang.Long">
+    SELECT store_id FROM public.tb_company_storage WHERE del_flag = '0' AND store_type = '1' AND organize_id = #{organizeId}
+  </select>
+  <select id="insertGrainDepot2">
+    INSERT INTO public.tb_company_storage(store_id, store_type, organize_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time) VALUES
+    <foreach collection="longs" item="item" separator=",">
+      (#{item}, '1', #{organizeId}, '0', #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+    </foreach>
+  </select>
+</mapper>

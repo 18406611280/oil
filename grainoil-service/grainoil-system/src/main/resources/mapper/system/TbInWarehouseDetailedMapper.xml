@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbInWarehouseDetailedMapper">
+  <resultMap id="BaseResultMap" type="InWarehouseDetailVo">
+    <id column="id" property="id" />
+    <result column="in_warehouse_id" property="inWarehouseId" />
+    <result column="grain_depot_id" property="grainDepotId" />
+    <result column="grain_depot_name" property="grainDepotName" />
+    <result column="storehouse_id" property="storehouseId" />
+    <result column="storehouse_name" property="storehouseName" />
+    <result column="heap_id" property="heapId" />
+    <result column="heap_name" property="heapName" />
+    <result column="child_heap_id" property="childHeapId" />
+    <result column="child_heap_code" property="childHeapCode" />
+    <result column="previous_stock" property="previousStock" />
+    <result column="warehouse_date" property="warehouseDate" />
+    <result column="quantity" property="quantity" />
+    <result column="enclosure" property="enclosure" />
+    <result column="is_audit" property="isAudit" />
+    <result column="numbers" property="numbers" />
+    <result column="remark" property="remark" />
+    <result column="approval_name" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    tiwd.id, tiwd.in_warehouse_id, tiwd.grain_depot_id, tiwd.grain_depot_name, tiwd.storehouse_id, tiwd.storehouse_name,
+    tiwd.heap_id, tiwd.heap_name, tiwd.child_heap_id, tiwd.child_heap_code, tiwd.previous_stock, tiwd.warehouse_date,
+    tiwd.quantity, tiwd.enclosure, tiwd.is_audit, tiwd.numbers, tiwd.remark, tiwdc.approval_name
+  </sql>
+  <select id="get" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM public.tb_in_warehouse_detailed tiwd LEFT JOIN public.tb_in_warehouse_detailed_check tiwdc ON tiwd.id = tiwdc.in_or_out_id AND tiwdc.type = '2'
+    WHERE tiwd.del_flag = '0' AND tiwd.in_warehouse_id = #{id}
+  </select>
+  <select id="batchDelete">
+    UPDATE public.tb_in_warehouse_detailed SET del_flag = '1', update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE del_flag = '0' AND is_audit = '3' AND in_warehouse_id = #{inWarehouse.id} AND id IN (
+      <foreach collection="inWarehouse.deletes" separator="," item="item">
+          #{item}
+      </foreach>
+      )
+  </select>
+  <insert id="batchInsert">
+    INSERT INTO public.tb_in_warehouse_detailed(in_warehouse_id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name, heap_id, heap_name, child_heap_id,
+                                        child_heap_code, previous_stock, warehouse_date, quantity,
+                                        enclosure, remark, is_audit, create_id, create_by, create_time, update_id, update_by, update_time) VALUES
+    <foreach collection="inWarehouse.detailed" separator="," item="item">
+      (#{inWarehouse.id}, #{item.grainDepotId}, #{item.grainDepotName}, #{item.storehouseId}, #{item.storehouseName}, #{item.heapId}, #{item.heapName}, #{item.childHeapId},
+      #{item.childHeapCode}, #{item.previousStock}, #{item.warehouseDate}, #{item.quantity},
+        #{item.enclosure}, #{item.remark}, '1', #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+    </foreach>
+  </insert>
+  <select id="check" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_in_warehouse_detailed WHERE del_flag = '0' AND in_warehouse_id = #{id} AND is_audit = '1'
+    AND id IN (
+    <foreach collection="ids" separator="," item="item">
+      #{item}
+    </foreach>
+    )
+  </select>
+  <update id="wrong">
+    UPDATE public.tb_in_warehouse_detailed SET is_audit = '3', update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE in_warehouse_id = #{id} AND del_flag = '0' AND id IN (
+    <foreach collection="ids" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </update>
+  <update id="correct">
+    UPDATE public.tb_in_warehouse_detailed SET is_audit = '2', update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE del_flag = '0' AND is_audit = '1' AND id NOT IN (
+    <foreach collection="ids" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </update>
+  <select id="get2" resultType="com.grainoil.system.domain.vo.in_warehouse.InWarehouseDetailVo">
+    SELECT id, in_warehouse_id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name,
+    heap_id, heap_name, child_heap_id, child_heap_code, previous_stock, warehouse_date,
+    quantity, enclosure, is_audit, numbers, remark
+    FROM public.tb_in_warehouse_detailed
+    WHERE del_flag = '0' AND in_warehouse_id = #{id} AND is_audit = '1'
+  </select>
+  <select id="count" resultType="java.lang.Double">
+    SELECT sum(quantity) FROM public.tb_in_warehouse_detailed WHERE del_flag = '0' AND is_audit = '2' AND
+      id IN (
+        <foreach collection="list" item="item" separator=",">
+          #{item}
+        </foreach>
+      )
+  </select>
+  <select id="check2" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_in_warehouse_detailed WHERE del_flag = '0' AND in_warehouse_id = #{id} AND is_audit = '3'
+    AND id IN (
+      <foreach collection="ids" separator="," item="item">
+          #{item}
+      </foreach>
+    )
+  </select>
+  <select id="getListByIds" resultType="com.grainoil.system.domain.TbInWarehouseDetailed">
+    SELECT id, in_warehouse_id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name,
+    heap_id, heap_name, child_heap_id, child_heap_code, previous_stock, warehouse_date,
+    quantity, enclosure, is_audit, numbers, remark
+    FROM tb_in_warehouse_detailed WHERE del_flag = '0' AND is_audit = '2' AND id IN (
+      <foreach collection="list" separator="," item="item">
+        #{item}
+      </foreach>
+    )
+  </select>
+</mapper>

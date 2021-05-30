@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbPileMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbPile">
+    <id column="pile_id" property="pileId" />
+    <result column="pile_name" property="pileName" />
+    <result column="pile_code" property="pileCode" />
+    <result column="pile_capacity" property="pileCapacity" />
+    <result column="pile_type" property="pileType" />
+    <result column="pile_state" property="pileState" />
+    <result column="pile_img" property="pileImg" />
+    <result column="storehouse_id" property="storehouseId" />
+    <result column="start_time" property="startTime" />
+    <result column="block_up_time" property="blockUpTime" />
+    <result column="remark" property="remark" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_split" property="isSplit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pile_id, pile_name, pile_code, pile_capacity, pile_type,
+    pile_state, pile_img, storehouse_id, start_time, block_up_time, remark, is_split,
+    del_flag, create_id, create_by, create_time, update_id, update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from public.tb_pile
+    where pile_id = #{pileId} and del_flag = '0'
+  </select>
+  <insert id="insert" keyColumn="pile_id" keyProperty="pile.id" useGeneratedKeys="true" parameterType="PileVo">
+    insert into public.tb_pile (pile_name, pile_code, pile_capacity, pile_state,
+      storehouse_id, remark, is_split, del_flag, create_id,
+      create_by, create_time, update_id, update_by, update_time)
+    values (#{pile.pileCode}, #{pile.pileCode}, #{pile.pileCapacity}, '0', #{pile.storehouseId}, #{pile.remark}, '0', '0', #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+  </insert>
+  <update id="updateByPrimaryKey">
+    update public.tb_pile
+    set pile_capacity = #{record.pileCapacity},
+      remark = #{record.remark},
+      update_id = #{currentUser.currentId},
+      update_by = #{currentUser.currentName},
+      update_time = now()
+    where pile_id = #{record.id} and del_flag = '0'
+  </update>
+
+
+
+  <select id="count" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_pile WHERE del_flag = '0' AND pile_code = #{pile.pileCode}
+    AND storehouse_id = #{pile.storehouseId}
+    <if test="b != false">
+      AND pile_id != #{pile.id}
+    </if>
+  </select>
+  <select id="select" resultType="PileListVo">
+    SELECT tp.pile_id id, tp.pile_code, tpp.pack_method, '1' type, tp.is_split
+    FROM public.tb_pile tp LEFT JOIN public.tb_pile_property tpp ON tp.pile_id = tpp.parent_id AND tpp.del_flag = '0'
+    WHERE tp.del_flag = '0' AND tp.storehouse_id = #{storehouseId}
+    UNION
+    SELECT tcp.pile_id id, tcp.pile_code, tpp.pack_method, '0' type, '' isSplit
+    FROM public.tb_child_pile tcp LEFT JOIN public.tb_pile tp ON tcp.parent_id = tp.pile_id
+    LEFT JOIN public.tb_pile_property tpp ON tp.pile_id = tpp.parent_id AND tpp.del_flag = '0'
+    WHERE tcp.del_flag = '0' AND tp.del_flag = '0' AND tp.storehouse_id = #{storehouseId}
+  </select>
+  <select id="list" resultType="PileListVo">
+    SELECT tp.pile_id id, tp.pile_code, tpp.pack_method, '1' type, tp.is_split
+    FROM public.tb_pile tp LEFT JOIN public.tb_company_storage tcs ON tp.pile_id = tcs.store_id AND tcs.store_type = '3'
+    LEFT JOIN public.tb_pile_property tpp ON tp.pile_id = tpp.parent_id AND tpp.del_flag = '0'
+    WHERE tcs.del_flag = '0' AND tp.del_flag = '0' AND tcs.organize_id = #{organizeId} AND tp.storehouse_id = #{storehouseId}
+    UNION
+    SELECT tcp.pile_id id, tcp.pile_code, tpp.pack_method, '0' type, '' isSplit
+    FROM public.tb_child_pile tcp LEFT JOIN public.tb_pile tp ON tcp.parent_id = tp.pile_id
+    LEFT JOIN public.tb_company_storage tcs ON tp.pile_id = tcs.store_id AND tcs.store_type = '3'
+    LEFT JOIN public.tb_pile_property tpp ON tp.pile_id = tpp.parent_id AND tpp.del_flag = '0'
+    WHERE tcs.del_flag = '0' AND tp.del_flag = '0' AND tcs.organize_id = #{organizeId} AND tp.storehouse_id = #{storehouseId}
+  </select>
+  <select id="check" resultType="java.lang.Integer">
+    SELECT count(1) FROM tb_pile tp LEFT JOIN tb_child_pile tcp ON tcp.parent_id = tp.pile_id AND tcp.del_flag = '0'
+    WHERE tp.del_flag = '0' AND tp.pile_state = '0' AND tp.storehouse_id = #{storehouseId}
+    AND concat(tp.pile_id, ',', ifnull(tcp.pile_id, 0)) IN (
+      <foreach collection="heapIds" item="item" separator=",">
+        #{item}
+      </foreach>
+    )
+  </select>
+  <select id="selectById" resultType="PileVo">
+    SELECT tp.pile_id id, tp.pile_capacity, tp.pile_code, tp.remark, tpp.pack_method, tp.storehouse_id, tp.pile_state
+    FROM public.tb_pile tp LEFT JOIN public.tb_pile_property tpp ON tp.pile_id = tpp.parent_id AND tpp.del_flag = '0'
+    WHERE tp.pile_id = #{pileId} AND tp.del_flag = '0'
+  </select>
+  <select id="checkPileToOrganize" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_storehouse ts LEFT JOIN public.tb_grain_depot tgd ON ts.grain_depot_id = tgd.grain_depot_id
+    WHERE ts.storehouse_id = #{id} AND tgd.center_id = #{organizeId} AND ts.del_flag = '0' AND tgd.del_flag = '0'
+  </select>
+  <select id="checkInOrganizeId" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_storehouse ts LEFT JOIN public.tb_grain_depot tgd ON ts.grain_depot_id = tgd.grain_depot_id
+    WHERE ts.storehouse_id = #{storehouseId} AND tgd.belong_id = #{organizeId} AND ts.del_flag = '0' AND tgd.del_flag = '0'
+  </select>
+  <update id="updateSplit">
+    UPDATE public.tb_pile SET
+    pile_code = #{splitDto.pileCode},
+    remark = #{splitDto.remark},
+    is_split = '1',
+    update_id = #{currentUser.currentId},
+    update_by = #{currentUser.currentName},
+    update_time = now()
+    where pile_id = #{splitDto.id} and del_flag = '0' and pile_state = '0'
+  </update>
+  <update id="updateCombine">
+    UPDATE public.tb_pile SET
+    pile_code = #{name},
+    is_split = '0',
+    update_id = #{currentUser.currentId},
+    update_by = #{currentUser.currentName},
+    update_time = now()
+    where pile_id = #{id} and del_flag = '0' and pile_state = '0'
+  </update>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbPilePropertyMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbPileProperty">
+    <id column="pile_id" property="pileId" />
+    <result column="parent_id" property="parentId" />
+    <result column="pack_method" property="packMethod" />
+    <result column="pack_materials" property="packMaterials" />
+    <result column="pack_num" property="packNum" />
+    <result column="remark" property="remark" />
+    <result column="pile_state" property="pileState" />
+    <result column="start_time" property="startTime" />
+    <result column="block_up_time" property="blockUpTime" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pile_id, parent_id, pack_method, pack_materials, pack_num, remark, pile_state, start_time, 
+    block_up_time, del_flag, create_id, create_by, create_time, update_id, update_by, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_pile_property
+    where pile_id = #{pileId}
+  </select>
+  <insert id="insert" keyColumn="pile_id" keyProperty="pileId" parameterType="com.grainoil.system.domain.TbPileProperty" useGeneratedKeys="true">
+    insert into public.tb_pile_property (parent_id, pack_method, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+    values (#{record.parentId}, #{record.packMethod}, '0',
+      #{currentUser.currentId}, #{currentUser.currentName}, now(),
+      #{currentUser.currentId}, #{currentUser.currentName}, now()
+      )
+  </insert>
+  <update id="updateByPrimaryKey">
+    update public.tb_pile_property
+    set pack_method = #{record.packMethod},
+      update_id = #{currentUser.currentId},
+      update_by = #{currentUser.currentName},
+      update_time = now()
+    where parent_id = #{record.id} and del_flag = '0'
+  </update>
+</mapper>

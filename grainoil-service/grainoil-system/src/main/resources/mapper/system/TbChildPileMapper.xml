@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbChildPileMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbChildPile">
+    <id column="pile_id" property="pileId" />
+    <result column="parent_id" property="parentId" />
+    <result column="pile_code" property="pileCode" />
+    <result column="pile_capacity" property="pileCapacity" />
+    <result column="remark" property="remark" />
+    <result column="pile_state" property="pileState" />
+    <result column="start_time" property="startTime" />
+    <result column="block_up_time" property="blockUpTime" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pile_id, parent_id, pile_code, pile_capacity, remark, pile_state, start_time, block_up_time, 
+    del_flag, create_id, create_by, create_time, update_id, update_by, update_time
+  </sql>
+  <insert id="batchInsert">
+    insert into public.tb_child_pile (parent_id, pile_code, pile_capacity, remark, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+    values
+    <foreach collection="splitDto.list" separator="," item="item">
+      (#{splitDto.id}, #{item.pileCode}, #{item.pileCapacity},
+      #{item.remark}, '0', #{currentUser.currentId},
+      #{currentUser.currentName}, now(), #{currentUser.currentId},
+      #{currentUser.currentName}, now())
+    </foreach>
+  </insert>
+  <update id="batchDelete">
+    UPDATE public.tb_child_pile SET del_flag = '1', update_time = NOW(), update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}
+    WHERE parent_id = #{id} AND del_flag = '0'
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM public.tb_child_pile WHERE del_flag = '0' AND pile_id = #{childHeapId}
+  </select>
+</mapper>

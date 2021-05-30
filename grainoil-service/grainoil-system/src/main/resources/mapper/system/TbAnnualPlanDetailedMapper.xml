@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbAnnualPlanDetailedMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbAnnualPlanDetailed">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="grain_organize_id" jdbcType="INTEGER" property="grainOrganizeId" />
+    <result column="grain_organize_name" jdbcType="VARCHAR" property="grainOrganizeName" />
+    <result column="annual_plan" jdbcType="INTEGER" property="annualPlan" />
+    <result column="foodstuff_tpye" jdbcType="VARCHAR" property="foodstuffTpye" />
+    <result column="grain_depot_id" jdbcType="INTEGER" property="grainDepotId" />
+    <result column="grain_depot_region" jdbcType="VARCHAR" property="grainDepotRegion" />
+    <result column="grain_depot_name" jdbcType="VARCHAR" property="grainDepotName" />
+    <result column="reached_life_storage" jdbcType="DOUBLE" property="reachedLifeStorage" />
+    <result column="delayed_storage" jdbcType="DOUBLE" property="delayedStorage" />
+    <result column="quantity_storage" jdbcType="DOUBLE" property="quantityStorage" />
+    <result column="rotation_quantity" jdbcType="DOUBLE" property="rotationQuantity" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, grain_organize_id, grain_organize_name, annual_plan, foodstuff_tpye, grain_depot_id, 
+    grain_depot_region, grain_depot_name, reached_life_storage, delayed_storage, quantity_storage, 
+    rotation_quantity, remark, del_flag, create_id, create_by, create_time, update_id, 
+    update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_annual_plan_detailed
+    where id = #{id}
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.grainoil.system.domain.TbAnnualPlanDetailed" useGeneratedKeys="true">
+    insert into tb_annual_plan_detailed (grain_organize_id, grain_organize_name, 
+      annual_plan, foodstuff_tpye, grain_depot_id, 
+      grain_depot_region, grain_depot_name, reached_life_storage, 
+      delayed_storage, quantity_storage, rotation_quantity, 
+      remark, del_flag, create_id, 
+      create_by, create_time, update_id, 
+      update_by, update_time)
+    values (#{grainOrganizeId,jdbcType=INTEGER}, #{grainOrganizeName,jdbcType=VARCHAR}, 
+      #{annualPlan,jdbcType=INTEGER}, #{foodstuffTpye,jdbcType=VARCHAR}, #{grainDepotId,jdbcType=INTEGER}, 
+      #{grainDepotRegion,jdbcType=VARCHAR}, #{grainDepotName,jdbcType=VARCHAR}, #{reachedLifeStorage,jdbcType=DOUBLE}, 
+      #{delayedStorage,jdbcType=DOUBLE}, #{quantityStorage,jdbcType=DOUBLE}, #{rotationQuantity,jdbcType=DOUBLE}, 
+      #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=VARCHAR}, #{createId,jdbcType=INTEGER}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=INTEGER}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbAnnualPlanDetailed">
+    update tb_annual_plan_detailed
+    set grain_organize_id = #{grainOrganizeId,jdbcType=INTEGER},
+      grain_organize_name = #{grainOrganizeName,jdbcType=VARCHAR},
+      annual_plan = #{annualPlan,jdbcType=INTEGER},
+      foodstuff_tpye = #{foodstuffTpye,jdbcType=VARCHAR},
+      grain_depot_id = #{grainDepotId,jdbcType=INTEGER},
+      grain_depot_region = #{grainDepotRegion,jdbcType=VARCHAR},
+      grain_depot_name = #{grainDepotName,jdbcType=VARCHAR},
+      reached_life_storage = #{reachedLifeStorage,jdbcType=DOUBLE},
+      delayed_storage = #{delayedStorage,jdbcType=DOUBLE},
+      quantity_storage = #{quantityStorage,jdbcType=DOUBLE},
+      rotation_quantity = #{rotationQuantity,jdbcType=DOUBLE},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbOrganizeLqMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbOrganizeLq">
+    <id column="id" property="id" />
+    <result column="organize_id" property="organizeId" />
+    <result column="lq_id" property="lqId" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, organize_id, lq_id, del_flag, create_id, create_by, create_time, update_id, update_by, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_organize_lq
+    where id = #{id}
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.grainoil.system.domain.TbOrganizeLq" useGeneratedKeys="true">
+    insert into tb_organize_lq (organize_id, lq_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+    values (#{organizeId}, #{lqId}, '0', #{createId}, #{createBy}, now(), #{updateId}, #{updateBy}, now())
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbOrganizeLq">
+    update tb_organize_lq
+    set organize_id = #{organizeId},
+      lq_id = #{lqId},
+      update_id = #{updateId},
+      update_by = #{updateBy},
+      update_time = now()
+    where id = #{id}
+  </update>
+  <select id="getLq" resultType="java.util.Map">
+    SELECT to2.organize_id,
+    CASE WHEN to2.organize_type = '1' THEN '广州市' ELSE tdd.dict_label END dict_label,
+    to2.organize_type
+    FROM public.tb_organize_lq tol LEFT JOIN public.tb_organize to2 ON tol.lq_id = to2.organize_id
+    LEFT JOIN public.tb_dict_data tdd ON tdd.dict_value = to2.organize_region AND tdd.dict_type = '7'
+    WHERE to2.del_flag = '0' AND tol.del_flag = '0' AND tol.organize_id = #{organizeId} AND to2.organize_state = '0'
+  </select>
+  <select id="getCompanyList" resultMap="com.grainoil.system.mapper.TbGrainActualInventoryMapper.FirstMap">
+    SELECT tol.organize_id value0, to2.organize_name label0
+    FROM public.tb_organize_lq tol LEFT JOIN public.tb_organize to2 ON tol.organize_id = to2.organize_id
+    WHERE tol.del_flag = '0' AND tol.lq_id = #{organizeId} AND to2.del_flag = '0' AND to2.organize_state = '0'
+  </select>
+</mapper>

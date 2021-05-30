@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbBatchPlanDepotInfoMapper">
+
+    <resultMap type="TbBatchPlanDepotInfo" id="TbBatchPlanDepotInfoResult">
+        <result property="id"    column="id"    />
+        <result property="batchPlanInfoId"    column="batch_plan_info_id"    />
+        <result property="grainDepotId"    column="grain_depot_id"    />
+        <result property="grainDepotName"    column="grain_depot_name"    />
+        <result property="storehouseId"    column="storehouse_id"    />
+        <result property="storehouseName"    column="storehouse_name"    />
+        <result property="heapId"    column="heap_id"    />
+        <result property="childHeapId"    column="child_heap_id"    />
+        <result property="childHeapCode"    column="child_heap_code"    />
+        <result property="heapName"    column="heap_name"    />
+        <result property="foodstuffTpye"    column="foodstuff_tpye"    />
+        <result property="producingArea"    column="producing_area"    />
+        <result property="moveInDate"    column="move_in_date"    />
+        <result property="depositType"    column="deposit_type"    />
+        <result property="stock"    column="stock"    />
+        <result property="outStock"    column="out_stock"    />
+        <result property="remark"    column="remark"    />
+        <result property="contractId"    column="contract_id"    />
+    </resultMap>
+
+    <sql id="selectTbBatchPlanDepotInfoVo">
+        select id, batch_plan_info_id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name, heap_id, child_heap_id, child_heap_code, heap_name, foodstuff_tpye, producing_area, move_in_date, deposit_type, stock, out_stock, remark, contract_id from tb_batch_plan_depot_info
+    </sql>
+
+    <select id="selectTbBatchPlanDepotInfoList" parameterType="TbBatchPlanDepotInfo" resultMap="TbBatchPlanDepotInfoResult">
+        <include refid="selectTbBatchPlanDepotInfoVo"/>
+        <where>
+            <if test="batchPlanInfoId != null "> and batch_plan_info_id = #{batchPlanInfoId}</if>
+            <if test="grainDepotId != null "> and grain_depot_id = #{grainDepotId}</if>
+            <if test="grainDepotName != null  and grainDepotName != ''"> and grain_depot_name like concat('%', #{grainDepotName}, '%')</if>
+            <if test="storehouseId != null "> and storehouse_id = #{storehouseId}</if>
+            <if test="storehouseName != null  and storehouseName != ''"> and storehouse_name like concat('%', #{storehouseName}, '%')</if>
+            <if test="heapId != null "> and heap_id = #{heapId}</if>
+            <if test="childHeapId != null "> and child_heap_id = #{childHeapId}</if>
+            <if test="childHeapCode != null  and childHeapCode != ''"> and child_heap_code = #{childHeapCode}</if>
+            <if test="heapName != null  and heapName != ''"> and heap_name like concat('%', #{heapName}, '%')</if>
+            <if test="foodstuffTpye != null  and foodstuffTpye != ''"> and foodstuff_tpye = #{foodstuffTpye}</if>
+            <if test="producingArea != null  and producingArea != ''"> and producing_area = #{producingArea}</if>
+            <if test="moveInDate != null  and moveInDate != ''"> and move_in_date = #{moveInDate}</if>
+            <if test="depositType != null  and depositType != ''"> and deposit_type = #{depositType}</if>
+            <if test="stock != null "> and stock = #{stock}</if>
+            <if test="outStock != null "> and out_stock = #{outStock}</if>
+            <if test="contractId != null "> and contract_id = #{contractId}</if>
+        </where>
+    </select>
+
+    <select id="selectTbBatchPlanDepotInfoById" parameterType="Long" resultMap="TbBatchPlanDepotInfoResult">
+        <include refid="selectTbBatchPlanDepotInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbBatchPlanDepotInfo" parameterType="TbBatchPlanDepotInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_batch_plan_depot_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="batchPlanInfoId != null">batch_plan_info_id,</if>
+            <if test="grainDepotId != null">grain_depot_id,</if>
+            <if test="grainDepotName != null">grain_depot_name,</if>
+            <if test="storehouseId != null">storehouse_id,</if>
+            <if test="storehouseName != null">storehouse_name,</if>
+            <if test="heapId != null">heap_id,</if>
+            <if test="childHeapId != null">child_heap_id,</if>
+            <if test="childHeapCode != null">child_heap_code,</if>
+            <if test="heapName != null">heap_name,</if>
+            <if test="foodstuffTpye != null">foodstuff_tpye,</if>
+            <if test="producingArea != null">producing_area,</if>
+            <if test="moveInDate != null">move_in_date,</if>
+            <if test="depositType != null">deposit_type,</if>
+            <if test="stock != null">stock,</if>
+            <if test="outStock != null">out_stock,</if>
+            <if test="remark != null">remark,</if>
+            <if test="contractId != null">contract_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="batchPlanInfoId != null">#{batchPlanInfoId},</if>
+            <if test="grainDepotId != null">#{grainDepotId},</if>
+            <if test="grainDepotName != null">#{grainDepotName},</if>
+            <if test="storehouseId != null">#{storehouseId},</if>
+            <if test="storehouseName != null">#{storehouseName},</if>
+            <if test="heapId != null">#{heapId},</if>
+            <if test="childHeapId != null">#{childHeapId},</if>
+            <if test="childHeapCode != null">#{childHeapCode},</if>
+            <if test="heapName != null">#{heapName},</if>
+            <if test="foodstuffTpye != null">#{foodstuffTpye},</if>
+            <if test="producingArea != null">#{producingArea},</if>
+            <if test="moveInDate != null">#{moveInDate},</if>
+            <if test="depositType != null">#{depositType},</if>
+            <if test="stock != null">#{stock},</if>
+            <if test="outStock != null">#{outStock},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="contractId != null">#{contractId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbBatchPlanDepotInfo" parameterType="TbBatchPlanDepotInfo">
+        update tb_batch_plan_depot_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="batchPlanInfoId != null">batch_plan_info_id = #{batchPlanInfoId},</if>
+            <if test="grainDepotId != null">grain_depot_id = #{grainDepotId},</if>
+            <if test="grainDepotName != null">grain_depot_name = #{grainDepotName},</if>
+            <if test="storehouseId != null">storehouse_id = #{storehouseId},</if>
+            <if test="storehouseName != null">storehouse_name = #{storehouseName},</if>
+            <if test="heapId != null">heap_id = #{heapId},</if>
+            <if test="childHeapId != null">child_heap_id = #{childHeapId},</if>
+            <if test="childHeapCode != null">child_heap_code = #{childHeapCode},</if>
+            <if test="heapName != null">heap_name = #{heapName},</if>
+            <if test="foodstuffTpye != null">foodstuff_tpye = #{foodstuffTpye},</if>
+            <if test="producingArea != null">producing_area = #{producingArea},</if>
+            <if test="moveInDate != null">move_in_date = #{moveInDate},</if>
+            <if test="depositType != null">deposit_type = #{depositType},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="outStock != null">out_stock = #{outStock},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="contractId != null">contract_id = #{contractId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbBatchPlanDepotInfoById" parameterType="Long">
+        delete from tb_batch_plan_depot_info where id = #{id}
+    </delete>
+
+    <delete id="deleteTbBatchPlanDepotInfoByIds" parameterType="String">
+        delete from tb_batch_plan_depot_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getBatchPlanDepotInfoListByBatchPlanInfoId" parameterType="long" resultType="com.grainoil.system.domain.vo.rotate.BatchPlanDepotInfo">
+        select
+               id,
+               batch_plan_info_id,
+               grain_depot_id,
+               grain_depot_name,
+               storehouse_id,
+               storehouse_name,
+               heap_id,
+               child_heap_id,
+               child_heap_code,
+               heap_name,
+               foodstuff_tpye,
+               producing_area,
+               move_in_date,
+               deposit_type,
+               stock,
+               out_stock,
+               remark,
+               contract_id
+        from public.tb_batch_plan_depot_info tbpdi
+        where tbpdi.batch_plan_info_id = #{batchPlanInfoId}
+    </select>
+</mapper>

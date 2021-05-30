@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbStorageContractDetailedMapper">
+
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbStorageContractDetailed">
+    <id column="id" property="id" />
+    <result column="stroage_contract_id" property="stroageContractId" />
+    <result column="grain_depot_id" property="grainDepotId" />
+    <result column="grain_depot_name" property="grainDepotName" />
+    <result column="grain_region_id" property="grainRegionId" />
+    <result column="grain_region_name" property="grainRegionName" />
+    <result column="variety" property="variety" />
+    <result column="variety_id" property="varietyId" />
+    <result column="quantity" property="quantity" />
+    <result column="price" property="price" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+      id, stroage_contract_id, grain_region_id, grain_region_name, grain_depot_id, grain_depot_name,
+      variety, variety_id, quantity, price, remark
+  </sql>
+  <insert id="batchInsert">
+    INSERT INTO public.tb_storage_contract_detailed(stroage_contract_id, grain_region_id, grain_region_name, grain_depot_id, grain_depot_name, variety, variety_id, quantity, price, remark) VALUES
+    <foreach collection="list" separator="," item="item">
+      (#{item.storageContractId}, #{item.grainRegionId}, #{item.grainRegionName}, #{item.grainDepotId}, #{item.grainDepotName}, #{item.variety}, #{item.varietyId}, #{item.quantity}, #{item.price}, #{item.remark})
+    </foreach>
+  </insert>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM public.tb_storage_contract_detailed WHERE id = #{id}
+  </select>
+</mapper>

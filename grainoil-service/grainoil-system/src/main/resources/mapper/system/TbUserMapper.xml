@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbUserMapper">
+  <resultMap type="TbUser" id="TbUserResult">
+    <id     property="userId"       column="user_id"      />
+    <result property="loginName"    column="login_name"   />
+    <result property="userName"     column="user_name"    />
+    <result property="phonenumber"  column="phonenumber"  />
+    <result property="organizeId"   column="organize_id"  />
+    <result property="organizeDepotId" column="organize_depot_id" />
+    <result property="organizeType" column="organize_type"/>
+    <result property="sex"          column="sex"          />
+    <result property="identification" column="identification"/>
+    <result property="password"     column="password"     />
+    <result property="salt"         column="salt"         />
+    <result property="state"       column="state"         />
+    <result property="delFlag"      column="del_flag"     />
+    <result property="createId"     column="create_id"    />
+    <result property="createBy"     column="create_by"    />
+    <result property="createTime"   column="create_time"  />
+    <result property="updateId"     column="update_id"    />
+    <result property="updateBy"     column="update_by"    />
+    <result property="updateTime"   column="update_time"  />
+    <result property="remark"       column="remark"       />
+    <association property="organize" javaType="TbOrganize">
+      <id property="organizeId" column="organize_id" />
+      <result property="organizeName" column="organize_name" />
+      <result property="organizeType" column="organize_type" />
+      <result property="organizeState" column="organize_state" />
+    </association>
+    <collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
+  </resultMap>
+
+  <resultMap id="RoleResult" type="TbRole">
+    <id     property="roleId"       column="role_id"        />
+    <result property="roleName"     column="role_name"      />
+    <result property="roleKey"      column="role_key"       />
+    <result property="roleSort"     column="role_sort"      />
+  </resultMap>
+
+  <sql id="selectUserVo">
+    SELECT u.user_id, u.login_name, u.user_name, u.phonenumber, u.sex, u.password, u.salt, u.state, u.del_flag, u.create_id, u.create_by, u.create_time, u.remark, u.organize_id, u.update_time, u.update_by, u.update_id,
+      u.organize_depot_id, u.organize_type, u.identification, tr.role_id, tr.role_name, tr.role_key, tr.role_sort, to2.organize_name, to2.organize_state
+    FROM public.tb_user u LEFT JOIN public.tb_user_role tur ON u.user_id = tur.user_id
+        LEFT JOIN public.tb_role tr ON tur.role_id = tr.role_id AND tr.del_flag ='0'
+        LEFT JOIN public.tb_organize to2 ON to2.organize_id = u.organize_id
+        LEFT JOIN public.tb_organize to3 ON to3.organize_id = u.organize_depot_id
+  </sql>
+
+  <select id="selectUserList" parameterType="TbUser" resultMap="TbUserResult">
+    select *
+    from PUBLIC.sys_user u
+    where u.del_flag = '0'
+    <if test="loginName != null and loginName != ''">
+      AND u.login_name LIKE concat('%', #{loginName}, '%')
+    </if>
+    <if test="state != null">
+      AND u.state = #{state}
+    </if>
+    <if test="userName != null and userName != ''">
+      AND u.user_name LIKE concat('%', #{userName}, '%')
+    </if>
+    <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+      AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+    </if>
+    <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+      AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+    </if>
+    <!--<if test="deptId != null and deptId != 0">-->
+      <!--AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))-->
+    <!--</if>-->
+    <!-- 数据范围过滤 -->
+    <!-- ${params.dataScope} -->
+  </select>
+
+  <select id="selectAllocatedList" parameterType="SysUser" resultMap="TbUserResult">
+    select distinct u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.phonenumber, u.status, u.create_time
+    from PUBLIC.sys_user u
+    left join PUBLIC.sys_dept d on u.dept_id = d.dept_id
+    left join PUBLIC.sys_user_role ur on u.user_id = ur.user_id
+    left join PUBLIC.sys_role r on r.role_id = ur.role_id
+    where u.del_flag = '0' and r.role_id = #{roleId}
+    <if test="loginName != null and loginName != ''">
+      AND u.login_name like concat('%', #{loginName}, '%')
+    </if>
+    <if test="phonenumber != null and phonenumber != ''">
+      AND u.phonenumber like concat('%', #{phonenumber}, '%')
+    </if>
+    <!-- 数据范围过滤 -->
+    ${params.dataScope}
+  </select>
+
+  <select id="selectUnallocatedList" parameterType="SysUser" resultMap="TbUserResult">
+    select distinct u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.phonenumber, u.status, u.create_time
+    from PUBLIC.sys_user u
+    left join PUBLIC.sys_dept d on u.dept_id = d.dept_id
+    left join PUBLIC.sys_user_role ur on u.user_id = ur.user_id
+    left join PUBLIC.sys_role r on r.role_id = ur.role_id
+    where u.del_flag = '0' and (r.role_id != #{roleId} or r.role_id IS NULL)
+    and u.user_id not in (select u.user_id from PUBLIC.sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId})
+    <if test="loginName != null and loginName != ''">
+      AND u.login_name like concat('%', #{loginName}, '%')
+    </if>
+    <if test="phonenumber != null and phonenumber != ''">
+      AND u.phonenumber like concat('%', #{phonenumber}, '%')
+    </if>
+    <!-- 数据范围过滤 -->
+    ${params.dataScope}
+  </select>
+
+  <select id="selectUserByLoginName" parameterType="String" resultMap="TbUserResult">
+    <include refid="selectUserVo"/>
+    where u.login_name = #{loginName} and tur.del_flag = '0' and to2.del_flag = '0'
+          and to2.organize_state = '0' and to3.del_flag = '0' and to3.organize_state = '0'
+  </select>
+
+  <select id="checkLoginNameUnique" parameterType="String" resultType="int">
+    select count(1) from public.tb_user where login_name=#{tbUser.loginName}
+    <if test="b != false">
+      <!--user_id !=-->
+    </if>
+  </select>
+
+  <select id="checkPhoneUnique" parameterType="String" resultType="TbUser">
+    select user_id, phonenumber from public.tb_user where phonenumber=#{phonenumber} and del_flag = '0'
+  </select>
+
+  <select id="selectUserById" parameterType="Long" resultMap="TbUserResult">
+    <include refid="selectUserVo"/>
+    where u.user_id = #{userId} and tur.del_flag = '0' and to2.del_flag = '0'
+    and to2.organize_state = '0' and to3.del_flag = '0' and to3.organize_state = '0'
+  </select>
+
+  <delete id="deleteUserById" parameterType="Long">
+    delete from PUBLIC.sys_user where user_id = #{userId}
+  </delete>
+
+  <delete id="deleteUserByIds" parameterType="Long">
+    update PUBLIC.sys_user set del_flag = '2' where user_id in
+    <foreach collection="array" item="userId" open="(" separator="," close=")">
+      #{userId}
+    </foreach>
+  </delete>
+
+  <update id="updateUser" parameterType="SysUser">
+    update public.sys_user
+    <set>
+      <if test="loginName != null and loginName != ''">login_name = #{loginName},</if>
+      <if test="userName != null and userName != ''">user_name = #{userName},</if>
+      <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
+      <if test="sex != null and sex != ''">sex = #{sex},</if>
+      <if test="password != null and password != ''">password = #{password},</if>
+      <if test="salt != null and salt != ''">salt = #{salt},</if>
+      <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+      <if test="remark != null and remark != ''">remark = #{remark},</if>
+      update_time = now()
+    </set>
+    where user_id = #{userId}
+  </update>
+
+  <insert id="insertUser" parameterType="TbUser" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+    insert into tb_user(
+    login_name, user_name, phonenumber, organize_id, organize_type, sex, password, salt, state, remark, create_id, create_by, create_time, update_id, update_by, update_time
+    )values(
+    #{loginName}, #{userName}, #{phonenumber}, 1, 1, #{sex}, #{password}, #{salt}, 0, #{remark}, #{createId}, #{createBy}, now(), #{updateId}, #{updateBy}, now()
+    )
+  </insert>
+  <select id="findGrainDepot" resultType="java.util.Map">
+    SELECT tb_user.user_id id, tb_user.login_name name
+    FROM public.tb_user LEFT JOIN public.tb_user_role ON tb_user.user_id = tb_user_role.user_id LEFT JOIN public.tb_role ON tb_user_role.role_id = tb_role.role_id
+    WHERE tb_user.del_flag = '0' AND tb_user.state = '0' AND tb_user_role.del_flag = '0' AND tb_role.del_flag = '0'
+    AND tb_user.organize_id = #{organizeId} AND tb_role.role_id = 2
+    GROUP BY tb_user.user_id
+  </select>
+    <select id="findStorehouse" resultType="java.util.Map">
+      SELECT tb_user.user_id id, tb_user.login_name name
+      FROM public.tb_user LEFT JOIN public.tb_user_role ON tb_user.user_id = tb_user_role.user_id LEFT JOIN public.tb_role ON tb_user_role.role_id = tb_role.role_id
+      WHERE tb_user.del_flag = '0' AND tb_user.state = '0' AND tb_user_role.del_flag = '0' AND tb_role.del_flag = '0'
+      AND tb_user.organize_id = #{organizeId} AND tb_role.role_id = 1
+      GROUP BY tb_user.user_id
+    </select>
+    <select id="getUserIds" resultType="java.lang.Long">
+      SELECT tu.user_id FROM public.tb_user tu LEFT JOIN public.tb_user_role tur ON tu.user_id = tur.user_id
+      WHERE tu.organize_id = #{organizeId} AND tur.role_id = #{roleId} AND tu.del_flag = '0' AND tur.del_flag = '0' AND tu.state = '0'
+    </select>
+  <select id="checkUserIds" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_user tu LEFT JOIN public.tb_user_role tur ON tu.user_id = tur.user_id
+    WHERE tu.organize_id = #{organizeId} AND tur.role_id = #{roleId} AND tu.del_flag = '0' AND tur.del_flag = '0' AND tu.state = '0'
+    AND tu.user_id IN (
+      <foreach collection="personId" item="item" separator=",">
+        #{item}
+      </foreach>
+    )
+  </select>
+
+</mapper>

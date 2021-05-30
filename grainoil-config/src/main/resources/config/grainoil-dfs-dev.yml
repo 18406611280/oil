@@ -1,0 +1,5 @@
+dfs:
+#  path: D:/grainoil/uploadPath/
+  path: F:/upload/
+#  path: /root/test/upload/
+  domain: http://127.0.0.1:8006/

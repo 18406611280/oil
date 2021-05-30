@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbStorageContractMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbStorageContract">
+    <id column="id" property="id" />
+    <result column="contract_code" property="contractCode" />
+    <result column="contract_name" property="contractName" />
+    <result column="grain_owner_id" property="grainOwnerId" />
+    <result column="grain_owner_name" property="grainOwnerName" />
+    <result column="organize_id" property="organizeId" />
+    <result column="organize_name" property="organizeName" />
+    <result column="begin_date" property="beginDate" />
+    <result column="end_date" property="endDate" />
+    <result column="contract_state" property="contractState" />
+    <result column="contract_file_id" property="contractFileId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_id" property="createId" />
+    <result column="create_time" property="createTime" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_id" property="updateId" />
+    <result column="update_time" property="updateTime" />
+    <result column="del_flag" property="delFlag" />
+    <result column="contract_date" property="contractDate" />
+    <association property="fileVo" resultMap="FileMap" />
+    <collection property="detailedList" resultMap="DetailMap" />
+  </resultMap>
+  <resultMap id="DetailMap" type="TbStorageContractDetailed">
+    <id column="id2" property="id" />
+    <result column="stroage_contract_id" property="stroageContractId" />
+    <result column="grain_depot_id" property="grainDepotId" />
+    <result column="grain_depot_name" property="grainDepotName" />
+    <result column="grain_region_id" property="grainRegionId" />
+    <result column="grain_region_name" property="grainRegionName" />
+    <result column="variety_id" property="varietyId" />
+    <result property="variety" column="variety" />
+    <result column="quantity" property="quantity" />
+    <result column="price" property="price" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <resultMap id="FileMap" type="FileVo">
+    <id column="file_id" property="fileId" />
+    <result column="file_name" property="fileName" />
+    <result column="url" property="url" />
+  </resultMap>
+  <sql id="Base_Column_List">
+      tsc.id, tsc.contract_code, tsc.contract_name, tsc.grain_owner_id, tsc.grain_owner_name, tsc.organize_id,
+      tsc.organize_name, tsc.begin_date, tsc.end_date, tsc.contract_state, tsc.contract_file_id, tsc.create_by,
+      tsc.create_id, tsc.create_time, tsc.update_by, tsc.update_id, tsc.update_time, tsc.del_flag, tsc.contract_date
+  </sql>
+  <sql id="Details_List">
+      tscd.id id2, tscd.stroage_contract_id, tscd.grain_region_id, tscd.grain_region_name, tscd.grain_depot_id, tscd.grain_depot_name,
+      tscd.variety_id, tscd.variety, tscd.quantity, tscd.price, tscd.remark
+  </sql>
+  <sql id="File_List">
+      tf.file_id, tf.file_name, tf.url
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />, <include refid="Details_List" />, <include refid="File_List" />
+    FROM public.tb_storage_contract tsc LEFT JOIN public.tb_storage_contract_detailed tscd ON tsc.id = tscd.stroage_contract_id
+          LEFT JOIN public.tb_file tf ON tf.file_id = tsc.contract_file_id
+    WHERE tsc.id = #{id} AND tsc.del_flag = '0'
+  </select>
+  <insert id="insert" keyColumn="record.id" keyProperty="id" useGeneratedKeys="true">
+    insert into public.tb_storage_contract (contract_code, grain_owner_id, grain_owner_name, organize_id,
+      organize_name, begin_date, end_date, contract_state, contract_file_id, create_by,
+      create_id, create_time, update_by, update_id, update_time, del_flag)
+    values (#{record.contractCode}, #{record.grainOwnerId}, #{record.grainOwnerName}, #{record.organizeId},
+      #{record.organizeName}, #{record.beginDate}, #{record.endDate}, '1', #{record.contractFileId}, #{currentUser.currentName},
+      #{currentUser.currentId}, now(), #{currentUser.currentName},
+      #{currentUser.currentId}, now(), '0')
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbStorageContract">
+    update tb_storage_contract
+    set contract_code = #{contractCode,jdbcType=VARCHAR},
+      contract_name = #{contractName,jdbcType=VARCHAR},
+      grain_owner_id = #{grainOwnerId,jdbcType=INTEGER},
+      grain_owner_name = #{grainOwnerName,jdbcType=VARCHAR},
+      organize_id = #{organizeId,jdbcType=INTEGER},
+      organize_name = #{organizeName,jdbcType=VARCHAR},
+      begin_date = #{beginDate,jdbcType=DATE},
+      end_date = #{endDate,jdbcType=DATE},
+      contract_state = #{contractState,jdbcType=VARCHAR},
+      contract_file_id = #{contractFileId,jdbcType=INTEGER},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_time = now(),
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      contract_date = #{contractDate,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="list2" resultType="java.util.Map">
+    SELECT tscd.id, tsc.contract_code, tsc.organize_name, tscd.variety, tscd.grain_depot_name, tgd.grain_depot_region, tscd.quantity,
+      concat(tsc.begin_date, ' ~ ', tsc.end_date) period, tscd.price, tsc.contract_state
+    FROM public.tb_storage_contract tsc LEFT JOIN public.tb_storage_contract_detailed tscd ON tsc.id = tscd.stroage_contract_id
+      LEFT JOIN public.tb_grain_depot tgd ON tgd.grain_depot_id = tscd.grain_depot_id AND tgd.del_flag = '0' AND tgd.grain_depot_state = '0'
+    WHERE tsc.del_flag = '0' AND tsc.organize_id = #{organizeId}
+    <if test="map.region != null and map.region != ''">
+      AND tgd.grain_depot_region = #{map.region}
+    </if>
+    <if test="map.varietyId != null and map.varietyId != ''">
+      AND tscd.variety_id = #{map.varietyId}
+    </if>
+    <if test="map.grainDepotId != null and map.grainDepotId != ''">
+      AND tscd.grain_depot_id = #{map.grainDepotId}
+    </if>
+    <if test="map.begin != null and map.begin != ''">
+      AND tsc.begin_date >= #{map.begin}
+    </if>
+    <if test="map.end != null and map.end != ''">
+      AND #{map.end} >= tsc.end_date
+    </if>
+    <if test="map.state != null and map.state != ''">
+      AND tsc.contract_state = #{map.state}
+    </if>
+    <if test="map.code != null and map.code != ''">
+      AND tsc.contract_code LIKE concat('%', #{map.code}, '%')
+    </if>
+    ORDER BY tsc.create_time DESC 
+  </select>
+  <select id="getBatchCode" resultType="java.util.Map">
+    SELECT id, contract_code FROM public.tb_storage_contract WHERE organize_id = #{organizeId} AND del_flag = '0'
+    AND contract_state != '4' AND contract_state != '5' AND contract_state != '6'
+  </select>
+  <select id="getData" resultMap="DataMap">
+    SELECT tscd.grain_depot_id, tscd.grain_depot_name, tscd.variety_id, tscd.variety
+    FROM public.tb_storage_contract tsc LEFT JOIN public.tb_storage_contract_detailed tscd ON tsc.id = tscd.stroage_contract_id
+    WHERE tsc.del_flag = '0' AND tsc.id = #{id}
+    ORDER BY tscd.grain_depot_id
+  </select>
+  <select id="getData2" resultMap="DataMap2">
+    SELECT tscd.grain_depot_id, tscd.grain_depot_name, ts.storehouse_id, ts.storehouse_name
+    FROM public.tb_storage_contract tsc LEFT JOIN public.tb_storage_contract_detailed tscd ON tsc.id = tscd.stroage_contract_id
+    LEFT JOIN public.tb_storehouse ts ON ts.grain_depot_id = tscd.grain_depot_id
+    WHERE tsc.del_flag = '0' AND tsc.id = #{id} AND ts.del_flag = '0' AND ts.storehouse_state = '0'
+    ORDER BY tscd.grain_depot_id
+  </select>
+    <resultMap id="DataMap" type="DropDownVo">
+        <id property="id" column="grain_depot_id" />
+        <result property="name" column="grain_depot_name" />
+        <collection property="varieties" ofType="com.grainoil.system.domain.vo.in_warehouse.VarietyDropDown">
+            <id column="variety_id" property="varietyId" />
+            <result column="variety" property="varietyName" />
+        </collection>
+    </resultMap>
+    <resultMap id="DataMap2" type="DropDownVo">
+        <id property="id" column="grain_depot_id" />
+        <result property="name" column="grain_depot_name" />
+        <collection property="storehouses" ofType="com.grainoil.system.domain.vo.in_warehouse.StorehouseDropDown">
+            <id column="storehouse_id" property="id" />
+            <result column="storehouse_name" property="name" />
+        </collection>
+    </resultMap>
+  <select id="list" resultType="java.util.Map">
+    SELECT tscd.id, tsc.contract_code, tsc.organize_name, tscd.variety, tscd.grain_depot_name, tgd.grain_depot_region, tscd.quantity,
+    concat(tsc.begin_date, ' ~ ', tsc.end_date) period, tscd.price, tsc.contract_state
+    FROM public.tb_storage_contract tsc LEFT JOIN public.tb_storage_contract_detailed tscd ON tsc.id = tscd.stroage_contract_id
+    LEFT JOIN public.tb_grain_depot tgd ON tgd.grain_depot_id = tscd.grain_depot_id AND tgd.del_flag = '0' AND tgd.grain_depot_state = '0'
+    WHERE tsc.del_flag = '0' AND tsc.grain_owner_id IN (
+      SELECT lq.lq_id FROM public.tb_organize_lq lq WHERE lq.del_flag = '0' AND lq.organize_id = #{organizeId}
+    )
+    <if test="map.region != null and map.region != ''">
+      AND tgd.grain_depot_region = #{map.region}
+    </if>
+    <if test="map.varietyId != null and map.varietyId != ''">
+      AND tscd.variety_id = #{map.varietyId}
+    </if>
+    <if test="map.grainDepotId != null and map.grainDepotId != ''">
+      AND tscd.grain_depot_id = #{map.grainDepotId}
+    </if>
+    <if test="map.begin != null and map.begin != ''">
+      AND tsc.begin_date >= #{map.begin}
+    </if>
+    <if test="map.end != null and map.end != ''">
+      AND #{map.end} >= tsc.end_date
+    </if>
+    <if test="map.state != null and map.state != ''">
+      AND tsc.contract_state = #{map.state}
+    </if>
+    <if test="map.code != null and map.code != ''">
+      AND tsc.contract_code LIKE concat('%', #{map.code}, '%')
+    </if>
+    <if test="map.belongId != null and map.belongId != ''">
+      AND tsc.organize_id = #{map.belongId}
+    </if>
+    ORDER BY tsc.create_time DESC
+  </select>
+</mapper>

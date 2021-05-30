@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbStorehouseMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbStorehouse">
+    <id column="storehouse_id" property="storehouseId" />
+    <result column="storehouse_type" property="storehouseType" />
+    <result column="storehouse_name" property="storehouseName" />
+    <result column="storehouse_code" property="storehouseCode" />
+    <result column="storehouse_capacity" property="storehouseCapacity" />
+    <result column="storehouse_state" property="storehouseState" />
+    <result column="storehouse_area" property="storehouseArea" />
+    <result column="storehouse_year" property="storehouseYear" />
+    <result column="storehouse_img" property="storehouseImg" />
+    <result column="remark" property="remark" />
+    <result column="grain_depot_id" property="grainDepotId" />
+    <result column="start_time" property="startTime" />
+    <result column="block_up_time" property="blockUpTime" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    storehouse_id, storehouse_name, storehouse_type, storehouse_code, storehouse_capacity, storehouse_state,
+    storehouse_area, storehouse_year, storehouse_img, remark, grain_depot_id, start_time, 
+    block_up_time, del_flag, create_id, create_by, create_time, update_id, update_by, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from public.tb_storehouse
+    where storehouse_id = #{storehouseId} and del_flag = '0'
+  </select>
+  <insert id="insert" keyColumn="storehouse_id" keyProperty="storehouseId" parameterType="com.grainoil.system.domain.TbStorehouse" useGeneratedKeys="true">
+    insert into public.tb_storehouse (storehouse_name, storehouse_type, storehouse_code, storehouse_capacity, storehouse_state, storehouse_area, storehouse_year,
+      remark, grain_depot_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+    values (#{record.storehouseCode}, #{record.storehouseType}, #{record.storehouseCode}, #{record.storehouseCapacity}, '0', #{record.storehouseArea}, #{record.storehouseYear},
+      #{record.remark}, #{record.grainDepotId}, '0', #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbStorehouse">
+    update public.tb_storehouse
+    set storehouse_name = #{record.storehouseCode},
+      storehouse_type = #{record.storehouseType},
+      storehouse_code = #{record.storehouseCode},
+      storehouse_capacity = #{record.storehouseCapacity},
+      storehouse_area = #{record.storehouseArea},
+      storehouse_year = #{record.storehouseYear},
+      remark = #{record.remark},
+      update_id = #{currentUser.currentId},
+      update_by = #{currentUser.currentName},
+      update_time = now()
+    where storehouse_id = #{record.storehouseId} and del_flag = '0' and storehouse_state = '0'
+  </update>
+  <select id="count" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_storehouse WHERE del_flag = '0' AND storehouse_code = #{storehouse.storehouseCode} AND grain_depot_id = #{storehouse.grainDepotId}
+    <if test="b != false">
+      AND storehouse_id != #{storehouse.storehouseId}
+    </if>
+  </select>
+  <select id="select" resultType="StorehouseListVo">
+    SELECT ts.storehouse_id, ts.storehouse_name, ts.storehouse_state, ts.storehouse_area, ts.storehouse_capacity, group_concat(to2.organize_name) useName
+    FROM public.tb_storehouse ts LEFT JOIN public.tb_company_storage tcs ON ts.storehouse_id = tcs.store_id AND tcs.del_flag = '0' AND tcs.store_type = '2'
+    LEFT JOIN public.tb_organize to2 ON tcs.organize_id = to2.organize_id
+    LEFT JOIN public.tb_grain_depot tgd on tgd.grain_depot_id = ts.grain_depot_id AND to2.del_flag = '0' AND to2.organize_state = '0' AND tgd.del_flag = '0'
+    WHERE ts.del_flag = '0' AND ts.grain_depot_id = #{storehouse.grainDepotId}
+    <if test="organizeId != null and organizeId != ''">
+      AND tgd.center_id = #{organizeId}
+    </if>
+    <if test="storehouse.storehouseId != null">
+      AND ts.storehouse_id = #{storehouse.storehouseId}
+    </if>
+    <if test="storehouse.belongId != null">
+      AND ts.storehouse_id IN (
+        SELECT ts2.storehouse_id FROM public.tb_storehouse ts2 LEFT JOIN public.tb_company_storage tcs2 ON ts2.storehouse_id = tcs2.store_id AND tcs2.del_flag = '0' AND tcs2.store_type = '2'
+        WHERE ts2.del_flag = '0' AND ts2.grain_depot_id = #{storehouse.grainDepotId} AND tcs2.organize_id = #{storehouse.belongId}
+      )
+    </if>
+    GROUP BY ts.storehouse_id
+  </select>
+  <select id="select2" resultType="StorehouseListVo">
+    SELECT ts.storehouse_id, ts.storehouse_name, ts.storehouse_state, ts.storehouse_area, ts.storehouse_capacity, group_concat(to2.organize_name) useName, '代储' type
+    FROM public.tb_storehouse ts LEFT JOIN public.tb_company_storage tcs ON ts.storehouse_id = tcs.store_id AND tcs.del_flag = '0' AND tcs.store_type = '2'
+    LEFT JOIN public.tb_organize to2 ON tcs.organize_id = to2.organize_id AND to2.del_flag = '0' AND to2.organize_state = '0'
+    WHERE ts.del_flag = '0' AND ts.grain_depot_id = #{storehouse.grainDepotId} AND to2.organize_id IS NOT NULL
+    AND ts.storehouse_id NOT IN (
+      SELECT ts3.storehouse_id FROM public.tb_storehouse ts3 LEFT JOIN public.tb_grain_depot tgd ON tgd.grain_depot_id = ts3.grain_depot_id
+      WHERE ts3.del_flag = '0' AND tgd.belong_id = #{organizeId} AND tgd.del_flag = '0'
+    )
+    <if test="storehouse.storehouseId != null">
+      AND ts.storehouse_id = #{storehouse.storehouseId}
+    </if>
+    <if test="storehouse.belongId != null">
+      AND ts.storehouse_id IN (
+        SELECT ts2.storehouse_id FROM public.tb_storehouse ts2 LEFT JOIN public.tb_company_storage tcs2 ON ts2.storehouse_id = tcs2.store_id AND tcs2.del_flag = '0' AND tcs2.store_type = '2'
+        WHERE ts2.del_flag = '0' AND ts2.grain_depot_id = #{storehouse.grainDepotId} AND tcs2.organize_id = #{storehouse.belongId}
+      )
+    </if>
+    GROUP BY ts.storehouse_id
+  </select>
+  <select id="checkInOrganize" resultType="integer">
+    SELECT count(1) FROM public.tb_storehouse ts LEFT JOIN public.tb_grain_depot tgd ON ts.grain_depot_id = tgd.grain_depot_id
+                              LEFT JOIN public.tb_organize to2 ON to2.organize_id = tgd.belong_id
+    WHERE ts.storehouse_id = #{storehouseId} AND to2.organize_id = #{organizeId} AND ts.del_flag = '0' AND tgd.del_flag = '0'
+      AND to2.del_flag = '0' AND to2.organize_state = '0'
+  </select>
+  <select id="judge" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_storehouse WHERE del_flag = '0' AND storehouse_state = '0' AND storehouse_id = #{storehouseId}
+  </select>
+  <select id="search" resultType="java.util.Map">
+    SELECT ts.storehouse_id, ts.storehouse_name
+    FROM public.tb_storehouse ts LEFT JOIN public.tb_grain_depot tgd ON ts.grain_depot_id = tgd.grain_depot_id
+    WHERE ts.del_flag = '0' AND tgd.grain_depot_id = #{grainDepotId} AND tgd.del_flag = '0'
+  </select>
+  <select id="search2" resultType="java.util.Map">
+    SELECT ts.storehouse_id, ts.storehouse_name
+    FROM public.tb_storehouse ts LEFT JOIN public.tb_company_storage tcs ON ts.storehouse_id = tcs.store_id AND tcs.store_type = '2'
+    WHERE ts.del_flag = '0' AND tcs.del_flag = '0' AND ts.grain_depot_id = #{grainDepotId} AND tcs.organize_id = #{organizeId}
+    AND tcs.id IS NOT NULL
+  </select>
+  <select id="checkInOrganizeLq" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_storehouse ts LEFT JOIN public.tb_grain_depot tgd ON tgd.grain_depot_id = ts.grain_depot_id AND tgd.del_flag = '0'
+    WHERE ts.del_flag = '0' AND ts.storehouse_id = #{id} AND tgd.center_id = #{organizeId}
+  </select>
+  <update id="update">
+    update public.tb_storehouse
+    set storehouse_capacity = #{storehouse.storehouseCapacity},
+    storehouse_area = #{storehouse.storehouseArea},
+    storehouse_year = #{storehouse.storehouseYear},
+    remark = #{storehouse.remark},
+    update_id = #{currentUser.currentId},
+    update_by = #{currentUser.currentName},
+    update_time = now()
+    where storehouse_id = #{storehouse.storehouseId} and del_flag = '0' and storehouse_state = '0'
+  </update>
+</mapper>

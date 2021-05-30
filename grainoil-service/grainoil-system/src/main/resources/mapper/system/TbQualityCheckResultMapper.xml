@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.domain.TbQualityCheckResultMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.quality.TbQualityCheckResult">
+    <id column="id" property="id" />
+    <result column="quality_apply_detailed_id" property="qualityApplyDetailedId" />
+    <result column="quality_check_id" property="qualityCheckId" />
+    <result column="quality_check_result" property="qualityCheckResult" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, quality_apply_detailed_id, quality_check_id, quality_check_result
+  </sql>
+  <select id="selectByExample" parameterType="com.grainoil.system.domain.example.TbQualityCheckResultExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from tb_quality_check_result
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_quality_check_result
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_quality_check_result
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.grainoil.system.domain.quality.TbQualityCheckResult">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_quality_check_result (quality_apply_detailed_id, quality_check_id, 
+      quality_check_result)
+    values (#{qualityApplyDetailedId,jdbcType=INTEGER}, #{qualityCheckId,jdbcType=INTEGER}, 
+      #{qualityCheckResult,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.grainoil.system.domain.quality.TbQualityCheckResult">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_quality_check_result
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="qualityApplyDetailedId != null">
+        quality_apply_detailed_id,
+      </if>
+      <if test="qualityCheckId != null">
+        quality_check_id,
+      </if>
+      <if test="qualityCheckResult != null">
+        quality_check_result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="qualityApplyDetailedId != null">
+        #{qualityApplyDetailedId,jdbcType=INTEGER},
+      </if>
+      <if test="qualityCheckId != null">
+        #{qualityCheckId,jdbcType=INTEGER},
+      </if>
+      <if test="qualityCheckResult != null">
+        #{qualityCheckResult,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.grainoil.system.domain.example.TbQualityCheckResultExample" resultType="java.lang.Long">
+    select count(*) from tb_quality_check_result
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_quality_check_result
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.qualityApplyDetailedId != null">
+        quality_apply_detailed_id = #{record.qualityApplyDetailedId,jdbcType=INTEGER},
+      </if>
+      <if test="record.qualityCheckId != null">
+        quality_check_id = #{record.qualityCheckId,jdbcType=INTEGER},
+      </if>
+      <if test="record.qualityCheckResult != null">
+        quality_check_result = #{record.qualityCheckResult,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_quality_check_result
+    set id = #{record.id,jdbcType=INTEGER},
+      quality_apply_detailed_id = #{record.qualityApplyDetailedId,jdbcType=INTEGER},
+      quality_check_id = #{record.qualityCheckId,jdbcType=INTEGER},
+      quality_check_result = #{record.qualityCheckResult,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.grainoil.system.domain.quality.TbQualityCheckResult">
+    update tb_quality_check_result
+    <set>
+      <if test="qualityApplyDetailedId != null">
+        quality_apply_detailed_id = #{qualityApplyDetailedId,jdbcType=INTEGER},
+      </if>
+      <if test="qualityCheckId != null">
+        quality_check_id = #{qualityCheckId,jdbcType=INTEGER},
+      </if>
+      <if test="qualityCheckResult != null">
+        quality_check_result = #{qualityCheckResult,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.quality.TbQualityCheckResult">
+    update tb_quality_check_result
+    set quality_apply_detailed_id = #{qualityApplyDetailedId,jdbcType=INTEGER},
+      quality_check_id = #{qualityCheckId,jdbcType=INTEGER},
+      quality_check_result = #{qualityCheckResult,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="batchInsert">
+    <if test="items.get(0) != null">
+            insert into tb_quality_check_result  (quality_apply_detailed_id, quality_check_id, 
+        quality_check_result)
+      values
+      <foreach collection="items" item="item" index="index" separator=",">
+      (#{item.qualityApplyDetailedId,jdbcType=INTEGER}, #{item.qualityCheckId,jdbcType=INTEGER}, 
+        #{item.qualityCheckResult,jdbcType=VARCHAR})
+      </foreach>
+    </if>
+  </insert>
+</mapper>

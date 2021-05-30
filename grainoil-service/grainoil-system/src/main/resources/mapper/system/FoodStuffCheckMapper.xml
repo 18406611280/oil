@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.quality.FoodStuffCheckMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.quality.FoodStuffCheck">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="variety_id" property="varietyId" />
+    <result column="variety" property="variety" />
+    <result column="apply_type" property="applyType" />
+    <result column="organize_id" property="organizeId" />
+    <result column="term_name" property="termName" />
+    <result column="standard" property="standard" />
+    <result column="create_by" property="createBy" />
+    <result column="create_id" property="createId" />
+    <result column="create_time" property="createTime" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_id"  property="updateId" />
+    <result column="update_time" property="updateTime" />
+    <result column="del_flag" property="delFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, variety_id, variety, apply_type, organize_id, term_name, standard, create_by, 
+    create_id, create_time, update_by, update_id, update_time, del_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_foodstuff_check_item
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="queryVariety" resultType="map">
+      SELECT * FROM (
+      SELECT  tv.variety_id first_id, tv.variety_name first_name, tv2.variety_id second_id,
+              tv2.variety_name second_name,COUNT(c.variety_id) item_number
+      FROM public.tb_variety tv LEFT JOIN public.tb_variety tv2 ON tv.variety_id = tv2.parent_id AND tv2.del_flag = '0' AND tv2.variety_state = '0'
+      LEFT JOIN public.tb_foodstuff_check_item c ON c.variety_id = tv2.variety_id
+      WHERE tv.del_flag = '0' AND tv.parent_id IS NULL AND tv.variety_state = '0' AND tv2.variety_id IS NOT NULL
+      GROUP BY tv.variety_id, tv.variety_name, tv2.variety_id, tv2.variety_name
+      UNION
+      SELECT  v.variety_id first_id, v.variety_name first_name, v.variety_id second_id, '-' second_name,COUNT(c.variety_id) item_number
+      FROM public.tb_variety v LEFT JOIN public.tb_foodstuff_check_item c ON c.variety_id = v.variety_id
+      WHERE v.parent_id IS NULL AND v.del_flag = '0' AND v.variety_state = '0' GROUP BY v.variety_id,v.variety_name) t
+      ORDER BY  t.first_id, t.second_name
+    </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_foodstuff_check_item
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.grainoil.system.domain.quality.FoodStuffCheck" useGeneratedKeys="true">
+    insert into public.tb_foodstuff_check_item ( variety_id, variety,
+      apply_type, organize_id, term_name, 
+      standard, create_by, create_id, 
+      create_time, update_by, update_id, 
+      update_time, del_flag)
+    values (#{varietyId}, #{variety},
+      #{applyType}, #{organizeId}, #{termName},
+      #{standard}, #{createBy}, #{createId},
+      #{createTime}, #{updateBy}, #{updateId},
+      #{updateTime}, '0')
+  </insert>
+  <insert id="insertSelective" parameterType="com.grainoil.system.domain.quality.FoodStuffCheck">
+    insert into tb_foodstuff_check_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="varietyId != null">
+        variety_id,
+      </if>
+      <if test="variety != null">
+        variety,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="organizeId != null">
+        organize_id,
+      </if>
+      <if test="termName != null">
+        term_name,
+      </if>
+      <if test="standard != null">
+        standard,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="varietyId != null">
+        #{varietyId,jdbcType=INTEGER},
+      </if>
+      <if test="variety != null">
+        #{variety},
+      </if>
+      <if test="applyType != null">
+        #{applyType},
+      </if>
+      <if test="organizeId != null">
+        #{organizeId,jdbcType=INTEGER},
+      </if>
+      <if test="termName != null">
+        #{termName},
+      </if>
+      <if test="standard != null">
+        #{standard},
+      </if>
+      <if test="createBy != null">
+        #{createBy},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.grainoil.system.domain.quality.FoodStuffCheck">
+    update tb_foodstuff_check_item
+    <set>
+      <if test="varietyId != null">
+        variety_id = #{varietyId,jdbcType=INTEGER},
+      </if>
+      <if test="variety != null">
+        variety = #{variety},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType},
+      </if>
+      <if test="organizeId != null">
+        organize_id = #{organizeId,jdbcType=INTEGER},
+      </if>
+      <if test="termName != null">
+        term_name = #{termName},
+      </if>
+      <if test="standard != null">
+        standard = #{standard},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.quality.FoodStuffCheck">
+    update tb_foodstuff_check_item
+    set variety_id = #{varietyId,jdbcType=INTEGER},
+      variety = #{variety},
+      apply_type = #{applyType},
+      organize_id = #{organizeId,jdbcType=INTEGER},
+      term_name = #{termName},
+      standard = #{standard},
+      create_by = #{createBy},
+      create_id = #{createId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

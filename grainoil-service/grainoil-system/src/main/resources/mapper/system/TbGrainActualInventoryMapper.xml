@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbGrainActualInventoryMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbGrainActualInventory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="grain_owner_id" jdbcType="INTEGER" property="grainOwnerId" />
+    <result column="grain_owner_name" jdbcType="VARCHAR" property="grainOwnerName" />
+    <result column="organize_name" jdbcType="VARCHAR" property="organizeName" />
+    <result column="organize_id" jdbcType="INTEGER" property="organizeId" />
+    <result column="grain_depot_id" jdbcType="INTEGER" property="grainDepotId" />
+    <result column="grain_depot_name" jdbcType="VARCHAR" property="grainDepotName" />
+    <result column="storehouse_id" jdbcType="INTEGER" property="storehouseId" />
+    <result column="storehouse_name" jdbcType="VARCHAR" property="storehouseName" />
+    <result column="heap_id" jdbcType="INTEGER" property="heapId" />
+    <result column="heap_name" jdbcType="VARCHAR" property="heapName" />
+    <result column="child_heap_id" jdbcType="INTEGER" property="childHeapId" />
+    <result column="child_heap_code" jdbcType="VARCHAR" property="childHeapCode" />
+    <result column="heap_state" jdbcType="VARCHAR" property="heapState" />
+    <result column="variety_id" jdbcType="INTEGER" property="varietyId" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="variety" jdbcType="VARCHAR" property="variety" />
+    <result column="child_varieties" jdbcType="VARCHAR" property="childVarieties" />
+    <result column="quantity" jdbcType="DOUBLE" property="quantity" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="producing_area" jdbcType="VARCHAR" property="producingArea" />
+    <result column="packing" jdbcType="VARCHAR" property="packing" />
+    <result column="packing_type" jdbcType="VARCHAR" property="packingType" />
+    <result column="bags_count" jdbcType="INTEGER" property="bagsCount" />
+    <result column="particular_year" jdbcType="VARCHAR" property="particularYear" />
+    <result column="warehousing_type" jdbcType="VARCHAR" property="warehousingType" />
+    <result column="warehouse_start_date" jdbcType="DATE" property="warehouseStartDate" />
+    <result column="warehouse_end_date" jdbcType="DATE" property="warehouseEndDate" />
+    <result column="apply_date" jdbcType="DATE" property="applyDate" />
+    <result column="due_date" jdbcType="DATE" property="dueDate" />
+    <result column="report_time" jdbcType="DATE" property="reportTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
+    <result column="contract_id" jdbcType="INTEGER" property="contractId" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="receipt_id" jdbcType="INTEGER" property="receiptId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, grain_owner_id, grain_owner_name, organize_name, organize_id, grain_depot_id, 
+    grain_depot_name, storehouse_id, storehouse_name, heap_id, heap_name, child_heap_id, 
+    child_heap_code, heap_state, variety_id, grade, variety, child_varieties, quantity, 
+    price, producing_area, packing, packing_type, bags_count, particular_year, warehousing_type, 
+    warehouse_start_date, warehouse_end_date, apply_date, due_date, report_time, create_by, 
+    create_id, create_time, update_by, update_id, update_time, del_flag, contract_id, 
+    batch_code, receipt_id
+  </sql>
+  <select id="selectByExample" parameterType="com.grainoil.system.domain.example.TbGrainActualInventoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_grain_actual_inventory
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_grain_actual_inventory
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_grain_actual_inventory
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.grainoil.system.domain.example.TbGrainActualInventoryExample">
+    delete from tb_grain_actual_inventory
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.grainoil.system.domain.TbGrainActualInventory">
+    insert into tb_grain_actual_inventory (id, grain_owner_id, grain_owner_name, 
+      organize_name, organize_id, grain_depot_id, 
+      grain_depot_name, storehouse_id, storehouse_name, 
+      heap_id, heap_name, child_heap_id, 
+      child_heap_code, heap_state, variety_id, 
+      grade, variety, child_varieties, 
+      quantity, price, producing_area, 
+      packing, packing_type, bags_count, 
+      particular_year, warehousing_type, warehouse_start_date, 
+      warehouse_end_date, apply_date, due_date, 
+      report_time, create_by, create_id, 
+      create_time, update_by, update_id, 
+      update_time, del_flag, contract_id, 
+      batch_code, receipt_id)
+    values (#{id,jdbcType=INTEGER}, #{grainOwnerId,jdbcType=INTEGER}, #{grainOwnerName,jdbcType=VARCHAR}, 
+      #{organizeName,jdbcType=VARCHAR}, #{organizeId,jdbcType=INTEGER}, #{grainDepotId,jdbcType=INTEGER}, 
+      #{grainDepotName,jdbcType=VARCHAR}, #{storehouseId,jdbcType=INTEGER}, #{storehouseName,jdbcType=VARCHAR}, 
+      #{heapId,jdbcType=INTEGER}, #{heapName,jdbcType=VARCHAR}, #{childHeapId,jdbcType=INTEGER}, 
+      #{childHeapCode,jdbcType=VARCHAR}, #{heapState,jdbcType=VARCHAR}, #{varietyId,jdbcType=INTEGER}, 
+      #{grade,jdbcType=VARCHAR}, #{variety,jdbcType=VARCHAR}, #{childVarieties,jdbcType=VARCHAR}, 
+      #{quantity,jdbcType=DOUBLE}, #{price,jdbcType=DOUBLE}, #{producingArea,jdbcType=VARCHAR}, 
+      #{packing,jdbcType=VARCHAR}, #{packingType,jdbcType=VARCHAR}, #{bagsCount,jdbcType=INTEGER}, 
+      #{particularYear,jdbcType=VARCHAR}, #{warehousingType,jdbcType=VARCHAR}, #{warehouseStartDate,jdbcType=DATE}, 
+      #{warehouseEndDate,jdbcType=DATE}, #{applyDate,jdbcType=DATE}, #{dueDate,jdbcType=DATE}, 
+      #{reportTime,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR}, #{createId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateId,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR}, #{contractId,jdbcType=INTEGER}, 
+      #{batchCode,jdbcType=VARCHAR}, #{receiptId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.grainoil.system.domain.TbGrainActualInventory">
+    insert into tb_grain_actual_inventory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="grainOwnerId != null">
+        grain_owner_id,
+      </if>
+      <if test="grainOwnerName != null">
+        grain_owner_name,
+      </if>
+      <if test="organizeName != null">
+        organize_name,
+      </if>
+      <if test="organizeId != null">
+        organize_id,
+      </if>
+      <if test="grainDepotId != null">
+        grain_depot_id,
+      </if>
+      <if test="grainDepotName != null">
+        grain_depot_name,
+      </if>
+      <if test="storehouseId != null">
+        storehouse_id,
+      </if>
+      <if test="storehouseName != null">
+        storehouse_name,
+      </if>
+      <if test="heapId != null">
+        heap_id,
+      </if>
+      <if test="heapName != null">
+        heap_name,
+      </if>
+      <if test="childHeapId != null">
+        child_heap_id,
+      </if>
+      <if test="childHeapCode != null">
+        child_heap_code,
+      </if>
+      <if test="heapState != null">
+        heap_state,
+      </if>
+      <if test="varietyId != null">
+        variety_id,
+      </if>
+      <if test="grade != null">
+        grade,
+      </if>
+      <if test="variety != null">
+        variety,
+      </if>
+      <if test="childVarieties != null">
+        child_varieties,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="producingArea != null">
+        producing_area,
+      </if>
+      <if test="packing != null">
+        packing,
+      </if>
+      <if test="packingType != null">
+        packing_type,
+      </if>
+      <if test="bagsCount != null">
+        bags_count,
+      </if>
+      <if test="particularYear != null">
+        particular_year,
+      </if>
+      <if test="warehousingType != null">
+        warehousing_type,
+      </if>
+      <if test="warehouseStartDate != null">
+        warehouse_start_date,
+      </if>
+      <if test="warehouseEndDate != null">
+        warehouse_end_date,
+      </if>
+      <if test="applyDate != null">
+        apply_date,
+      </if>
+      <if test="dueDate != null">
+        due_date,
+      </if>
+      <if test="reportTime != null">
+        report_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="contractId != null">
+        contract_id,
+      </if>
+      <if test="batchCode != null">
+        batch_code,
+      </if>
+      <if test="receiptId != null">
+        receipt_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="grainOwnerId != null">
+        #{grainOwnerId,jdbcType=INTEGER},
+      </if>
+      <if test="grainOwnerName != null">
+        #{grainOwnerName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizeName != null">
+        #{organizeName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizeId != null">
+        #{organizeId,jdbcType=INTEGER},
+      </if>
+      <if test="grainDepotId != null">
+        #{grainDepotId,jdbcType=INTEGER},
+      </if>
+      <if test="grainDepotName != null">
+        #{grainDepotName,jdbcType=VARCHAR},
+      </if>
+      <if test="storehouseId != null">
+        #{storehouseId,jdbcType=INTEGER},
+      </if>
+      <if test="storehouseName != null">
+        #{storehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="heapId != null">
+        #{heapId,jdbcType=INTEGER},
+      </if>
+      <if test="heapName != null">
+        #{heapName,jdbcType=VARCHAR},
+      </if>
+      <if test="childHeapId != null">
+        #{childHeapId,jdbcType=INTEGER},
+      </if>
+      <if test="childHeapCode != null">
+        #{childHeapCode,jdbcType=VARCHAR},
+      </if>
+      <if test="heapState != null">
+        #{heapState,jdbcType=VARCHAR},
+      </if>
+      <if test="varietyId != null">
+        #{varietyId,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null">
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="variety != null">
+        #{variety,jdbcType=VARCHAR},
+      </if>
+      <if test="childVarieties != null">
+        #{childVarieties,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=DOUBLE},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="producingArea != null">
+        #{producingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="packing != null">
+        #{packing,jdbcType=VARCHAR},
+      </if>
+      <if test="packingType != null">
+        #{packingType,jdbcType=VARCHAR},
+      </if>
+      <if test="bagsCount != null">
+        #{bagsCount,jdbcType=INTEGER},
+      </if>
+      <if test="particularYear != null">
+        #{particularYear,jdbcType=VARCHAR},
+      </if>
+      <if test="warehousingType != null">
+        #{warehousingType,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseStartDate != null">
+        #{warehouseStartDate,jdbcType=DATE},
+      </if>
+      <if test="warehouseEndDate != null">
+        #{warehouseEndDate,jdbcType=DATE},
+      </if>
+      <if test="applyDate != null">
+        #{applyDate,jdbcType=DATE},
+      </if>
+      <if test="dueDate != null">
+        #{dueDate,jdbcType=DATE},
+      </if>
+      <if test="reportTime != null">
+        #{reportTime,jdbcType=DATE},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null">
+        #{contractId,jdbcType=INTEGER},
+      </if>
+      <if test="batchCode != null">
+        #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptId != null">
+        #{receiptId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.grainoil.system.domain.example.TbGrainActualInventoryExample" resultType="java.lang.Long">
+    select count(*) from tb_grain_actual_inventory
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_grain_actual_inventory
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.grainOwnerId != null">
+        grain_owner_id = #{record.grainOwnerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.grainOwnerName != null">
+        grain_owner_name = #{record.grainOwnerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.organizeName != null">
+        organize_name = #{record.organizeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.organizeId != null">
+        organize_id = #{record.organizeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.grainDepotId != null">
+        grain_depot_id = #{record.grainDepotId,jdbcType=INTEGER},
+      </if>
+      <if test="record.grainDepotName != null">
+        grain_depot_name = #{record.grainDepotName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.storehouseId != null">
+        storehouse_id = #{record.storehouseId,jdbcType=INTEGER},
+      </if>
+      <if test="record.storehouseName != null">
+        storehouse_name = #{record.storehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.heapId != null">
+        heap_id = #{record.heapId,jdbcType=INTEGER},
+      </if>
+      <if test="record.heapName != null">
+        heap_name = #{record.heapName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.childHeapId != null">
+        child_heap_id = #{record.childHeapId,jdbcType=INTEGER},
+      </if>
+      <if test="record.childHeapCode != null">
+        child_heap_code = #{record.childHeapCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.heapState != null">
+        heap_state = #{record.heapState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.varietyId != null">
+        variety_id = #{record.varietyId,jdbcType=INTEGER},
+      </if>
+      <if test="record.grade != null">
+        grade = #{record.grade,jdbcType=VARCHAR},
+      </if>
+      <if test="record.variety != null">
+        variety = #{record.variety,jdbcType=VARCHAR},
+      </if>
+      <if test="record.childVarieties != null">
+        child_varieties = #{record.childVarieties,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quantity != null">
+        quantity = #{record.quantity,jdbcType=DOUBLE},
+      </if>
+      <if test="record.price != null">
+        price = #{record.price,jdbcType=DOUBLE},
+      </if>
+      <if test="record.producingArea != null">
+        producing_area = #{record.producingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="record.packing != null">
+        packing = #{record.packing,jdbcType=VARCHAR},
+      </if>
+      <if test="record.packingType != null">
+        packing_type = #{record.packingType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bagsCount != null">
+        bags_count = #{record.bagsCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.particularYear != null">
+        particular_year = #{record.particularYear,jdbcType=VARCHAR},
+      </if>
+      <if test="record.warehousingType != null">
+        warehousing_type = #{record.warehousingType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.warehouseStartDate != null">
+        warehouse_start_date = #{record.warehouseStartDate,jdbcType=DATE},
+      </if>
+      <if test="record.warehouseEndDate != null">
+        warehouse_end_date = #{record.warehouseEndDate,jdbcType=DATE},
+      </if>
+      <if test="record.applyDate != null">
+        apply_date = #{record.applyDate,jdbcType=DATE},
+      </if>
+      <if test="record.dueDate != null">
+        due_date = #{record.dueDate,jdbcType=DATE},
+      </if>
+      <if test="record.reportTime != null">
+        report_time = #{record.reportTime,jdbcType=DATE},
+      </if>
+      <if test="record.createBy != null">
+        create_by = #{record.createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createId != null">
+        create_id = #{record.createId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateBy != null">
+        update_by = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateId != null">
+        update_id = #{record.updateId,jdbcType=INTEGER},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.delFlag != null">
+        del_flag = #{record.delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null">
+        contract_id = #{record.contractId,jdbcType=INTEGER},
+      </if>
+      <if test="record.batchCode != null">
+        batch_code = #{record.batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiptId != null">
+        receipt_id = #{record.receiptId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_grain_actual_inventory
+    set id = #{record.id,jdbcType=INTEGER},
+      grain_owner_id = #{record.grainOwnerId,jdbcType=INTEGER},
+      grain_owner_name = #{record.grainOwnerName,jdbcType=VARCHAR},
+      organize_name = #{record.organizeName,jdbcType=VARCHAR},
+      organize_id = #{record.organizeId,jdbcType=INTEGER},
+      grain_depot_id = #{record.grainDepotId,jdbcType=INTEGER},
+      grain_depot_name = #{record.grainDepotName,jdbcType=VARCHAR},
+      storehouse_id = #{record.storehouseId,jdbcType=INTEGER},
+      storehouse_name = #{record.storehouseName,jdbcType=VARCHAR},
+      heap_id = #{record.heapId,jdbcType=INTEGER},
+      heap_name = #{record.heapName,jdbcType=VARCHAR},
+      child_heap_id = #{record.childHeapId,jdbcType=INTEGER},
+      child_heap_code = #{record.childHeapCode,jdbcType=VARCHAR},
+      heap_state = #{record.heapState,jdbcType=VARCHAR},
+      variety_id = #{record.varietyId,jdbcType=INTEGER},
+      grade = #{record.grade,jdbcType=VARCHAR},
+      variety = #{record.variety,jdbcType=VARCHAR},
+      child_varieties = #{record.childVarieties,jdbcType=VARCHAR},
+      quantity = #{record.quantity,jdbcType=DOUBLE},
+      price = #{record.price,jdbcType=DOUBLE},
+      producing_area = #{record.producingArea,jdbcType=VARCHAR},
+      packing = #{record.packing,jdbcType=VARCHAR},
+      packing_type = #{record.packingType,jdbcType=VARCHAR},
+      bags_count = #{record.bagsCount,jdbcType=INTEGER},
+      particular_year = #{record.particularYear,jdbcType=VARCHAR},
+      warehousing_type = #{record.warehousingType,jdbcType=VARCHAR},
+      warehouse_start_date = #{record.warehouseStartDate,jdbcType=DATE},
+      warehouse_end_date = #{record.warehouseEndDate,jdbcType=DATE},
+      apply_date = #{record.applyDate,jdbcType=DATE},
+      due_date = #{record.dueDate,jdbcType=DATE},
+      report_time = #{record.reportTime,jdbcType=DATE},
+      create_by = #{record.createBy,jdbcType=VARCHAR},
+      create_id = #{record.createId,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      update_id = #{record.updateId,jdbcType=INTEGER},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{record.delFlag,jdbcType=VARCHAR},
+      contract_id = #{record.contractId,jdbcType=INTEGER},
+      batch_code = #{record.batchCode,jdbcType=VARCHAR},
+      receipt_id = #{record.receiptId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.grainoil.system.domain.TbGrainActualInventory">
+    update tb_grain_actual_inventory
+    <set>
+      <if test="grainOwnerId != null">
+        grain_owner_id = #{grainOwnerId,jdbcType=INTEGER},
+      </if>
+      <if test="grainOwnerName != null">
+        grain_owner_name = #{grainOwnerName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizeName != null">
+        organize_name = #{organizeName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizeId != null">
+        organize_id = #{organizeId,jdbcType=INTEGER},
+      </if>
+      <if test="grainDepotId != null">
+        grain_depot_id = #{grainDepotId,jdbcType=INTEGER},
+      </if>
+      <if test="grainDepotName != null">
+        grain_depot_name = #{grainDepotName,jdbcType=VARCHAR},
+      </if>
+      <if test="storehouseId != null">
+        storehouse_id = #{storehouseId,jdbcType=INTEGER},
+      </if>
+      <if test="storehouseName != null">
+        storehouse_name = #{storehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="heapId != null">
+        heap_id = #{heapId,jdbcType=INTEGER},
+      </if>
+      <if test="heapName != null">
+        heap_name = #{heapName,jdbcType=VARCHAR},
+      </if>
+      <if test="childHeapId != null">
+        child_heap_id = #{childHeapId,jdbcType=INTEGER},
+      </if>
+      <if test="childHeapCode != null">
+        child_heap_code = #{childHeapCode,jdbcType=VARCHAR},
+      </if>
+      <if test="heapState != null">
+        heap_state = #{heapState,jdbcType=VARCHAR},
+      </if>
+      <if test="varietyId != null">
+        variety_id = #{varietyId,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="variety != null">
+        variety = #{variety,jdbcType=VARCHAR},
+      </if>
+      <if test="childVarieties != null">
+        child_varieties = #{childVarieties,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=DOUBLE},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="producingArea != null">
+        producing_area = #{producingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="packing != null">
+        packing = #{packing,jdbcType=VARCHAR},
+      </if>
+      <if test="packingType != null">
+        packing_type = #{packingType,jdbcType=VARCHAR},
+      </if>
+      <if test="bagsCount != null">
+        bags_count = #{bagsCount,jdbcType=INTEGER},
+      </if>
+      <if test="particularYear != null">
+        particular_year = #{particularYear,jdbcType=VARCHAR},
+      </if>
+      <if test="warehousingType != null">
+        warehousing_type = #{warehousingType,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseStartDate != null">
+        warehouse_start_date = #{warehouseStartDate,jdbcType=DATE},
+      </if>
+      <if test="warehouseEndDate != null">
+        warehouse_end_date = #{warehouseEndDate,jdbcType=DATE},
+      </if>
+      <if test="applyDate != null">
+        apply_date = #{applyDate,jdbcType=DATE},
+      </if>
+      <if test="dueDate != null">
+        due_date = #{dueDate,jdbcType=DATE},
+      </if>
+      <if test="reportTime != null">
+        report_time = #{reportTime,jdbcType=DATE},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null">
+        contract_id = #{contractId,jdbcType=INTEGER},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptId != null">
+        receipt_id = #{receiptId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbGrainActualInventory">
+    update tb_grain_actual_inventory
+    set grain_owner_id = #{grainOwnerId,jdbcType=INTEGER},
+      grain_owner_name = #{grainOwnerName,jdbcType=VARCHAR},
+      organize_name = #{organizeName,jdbcType=VARCHAR},
+      organize_id = #{organizeId,jdbcType=INTEGER},
+      grain_depot_id = #{grainDepotId,jdbcType=INTEGER},
+      grain_depot_name = #{grainDepotName,jdbcType=VARCHAR},
+      storehouse_id = #{storehouseId,jdbcType=INTEGER},
+      storehouse_name = #{storehouseName,jdbcType=VARCHAR},
+      heap_id = #{heapId,jdbcType=INTEGER},
+      heap_name = #{heapName,jdbcType=VARCHAR},
+      child_heap_id = #{childHeapId,jdbcType=INTEGER},
+      child_heap_code = #{childHeapCode,jdbcType=VARCHAR},
+      heap_state = #{heapState,jdbcType=VARCHAR},
+      variety_id = #{varietyId,jdbcType=INTEGER},
+      grade = #{grade,jdbcType=VARCHAR},
+      variety = #{variety,jdbcType=VARCHAR},
+      child_varieties = #{childVarieties,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=DOUBLE},
+      price = #{price,jdbcType=DOUBLE},
+      producing_area = #{producingArea,jdbcType=VARCHAR},
+      packing = #{packing,jdbcType=VARCHAR},
+      packing_type = #{packingType,jdbcType=VARCHAR},
+      bags_count = #{bagsCount,jdbcType=INTEGER},
+      particular_year = #{particularYear,jdbcType=VARCHAR},
+      warehousing_type = #{warehousingType,jdbcType=VARCHAR},
+      warehouse_start_date = #{warehouseStartDate,jdbcType=DATE},
+      warehouse_end_date = #{warehouseEndDate,jdbcType=DATE},
+      apply_date = #{applyDate,jdbcType=DATE},
+      due_date = #{dueDate,jdbcType=DATE},
+      report_time = #{reportTime,jdbcType=DATE},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_id = #{createId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      contract_id = #{contractId,jdbcType=INTEGER},
+      batch_code = #{batchCode,jdbcType=VARCHAR},
+      receipt_id = #{receiptId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getOrganizeList" resultMap="FirstMap">
+    SELECT grain_depot_id value0, grain_depot_name label0 FROM public.tb_grain_actual_inventory
+    WHERE grain_owner_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <select id="getCompanyList" resultMap="FirstMap">
+    SELECT grain_depot_id value0, grain_depot_name label0
+    FROM public.tb_grain_actual_inventory WHERE organize_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <select id="getOrganizeList2" resultMap="SecondMap">
+    SELECT grain_depot_id value0, grain_depot_name label0, storehouse_id value2, storehouse_name label2
+    FROM public.tb_grain_actual_inventory WHERE grain_owner_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <select id="getCompanyList2" resultMap="SecondMap">
+    SELECT grain_depot_id value0, grain_depot_name label0, storehouse_id value2, storehouse_name label2
+    FROM public.tb_grain_actual_inventory WHERE organize_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <select id="getOrganizeList3" resultMap="ThirdMap">
+    SELECT grain_depot_id value0, grain_depot_name label0, storehouse_id value2, storehouse_name label2, heap_id value3, heap_name label3
+    FROM public.tb_grain_actual_inventory WHERE grain_owner_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <select id="getCompanyList3" resultMap="ThirdMap">
+    SELECT grain_depot_id value0, grain_depot_name label0, storehouse_id value2, storehouse_name label2, heap_id value3, heap_name label3
+    FROM public.tb_grain_actual_inventory WHERE organize_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <resultMap id="FirstMap" type="LeafNode">
+    <result property="value" column="value0" />
+    <result property="label" column="label0" />
+  </resultMap>
+  <resultMap id="SecondMap" type="SecondNode">
+    <result property="value" column="value0" />
+    <result property="label" column="label0" />
+    <collection property="children" ofType="com.grainoil.system.domain.vo.common.LeafNode">
+      <result property="value" column="value2" />
+      <result property="label" column="label2" />
+    </collection>
+  </resultMap>
+  <resultMap id="ThirdMap" type="ThirdNode">
+    <result property="value" column="value0" />
+    <result property="label" column="label0" />
+    <collection property="children" ofType="com.grainoil.system.domain.vo.common.SecondNode">
+      <result property="value" column="value2" />
+      <result property="label" column="label2" />
+      <collection property="children" ofType="com.grainoil.system.domain.vo.common.LeafNode">
+        <result property="value" column="value3" />
+        <result property="label" column="label3" />
+      </collection>
+    </collection>
+  </resultMap>
+  <select id="getInsert" resultType="com.grainoil.system.domain.vo.rotate.InsertListVo">
+    SELECT id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name, heap_id, heap_name, child_heap_id,
+    child_heap_code, variety_id, variety, child_varieties, quantity,
+    producing_area, packing, concat(warehouse_start_date, ' ~ ', warehouse_end_date) warehouseDate
+    FROM public.tb_grain_actual_inventory WHERE del_flag = '0' AND organize_id = #{organizeId}
+  </select>
+</mapper>

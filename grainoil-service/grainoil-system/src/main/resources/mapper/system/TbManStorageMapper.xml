@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbManStorageMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbManStorage">
+    <id column="id" property="id" />
+    <result column="person_id" property="personId" />
+    <result column="store_id" property="storeId" />
+    <result column="store_type" property="storeType" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, person_id, store_id, store_type, del_flag, create_id, create_by, create_time, 
+    update_id, update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_man_storage
+    where id = #{id}
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.grainoil.system.domain.TbManStorage" useGeneratedKeys="true">
+    insert into tb_man_storage (person_id, store_id, store_type, 
+      del_flag, create_id, create_by, 
+      create_time, update_id, update_by, 
+      update_time)
+    values (#{personId,jdbcType=INTEGER}, #{storeId,jdbcType=INTEGER}, #{storeType,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=CHAR}, #{createId,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      now(), #{updateId,jdbcType=INTEGER}, #{updateBy,jdbcType=VARCHAR},
+      now())
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbManStorage">
+    update tb_man_storage
+    set person_id = #{personId,jdbcType=INTEGER},
+      store_id = #{storeId,jdbcType=INTEGER},
+      store_type = #{storeType,jdbcType=VARCHAR},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id} and del_flag = '0'
+  </update>
+
+
+
+  <update id="delete">
+    UPDATE public.tb_man_storage SET del_flag = '1', update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE store_type = #{storeType} AND store_id = #{storeId}
+    <if test="userIds != null and userIds.size() != 0">
+      AND person_id IN (
+        <foreach collection="userIds" separator="," item="item">
+          #{item}
+        </foreach>
+      )
+    </if>
+    <if test="userIds != null and userIds.size() == 0">
+      AND FALSE
+    </if>
+  </update>
+  <insert id="batchInsert">
+    insert into public.tb_man_storage (person_id, store_id, store_type, del_flag, create_id, create_by, create_time, update_id, update_by, update_time) values
+    <foreach collection="personId" separator="," item="item">
+      (#{item}, #{storeId}, #{storeType}, '0', #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+    </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbVarietyMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbVariety">
+    <id column="variety_id" property="varietyId" />
+    <result column="variety_name" property="varietyName" />
+    <result column="variety_shortname" property="varietyShortname" />
+    <result column="percent" property="percent" />
+    <result property="rotationPercent" column="rotation_percent" />
+    <result column="months" property="months" />
+    <result column="parent_id" property="parentId" />
+    <result column="transform_id" property="transformId" />
+    <result column="transform_percent" property="transformPercent" />
+    <result column="variety_state" property="varietyState" />
+    <result column="remark" property="remark" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    variety_id, variety_name, variety_shortname, percent, rotation_percent, months, parent_id, transform_id, transform_percent,
+    variety_state, remark, del_flag, create_id, create_by, create_time, update_id, update_by,
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from public.tb_variety
+    where variety_id = #{varietyId} and del_flag = '0' and variety_state = '0'
+  </select>
+  <insert id="insert" keyColumn="variety_id" keyProperty="record.varietyId" useGeneratedKeys="true">
+    insert into public.tb_variety (variety_name, variety_shortname,
+      percent, rotation_percent, months, variety_state, remark, del_flag,
+      create_id, create_by, create_time,
+      update_id, update_by, update_time
+      )
+    values (#{record.varietyName}, #{record.varietyShortname}, #{record.percent}, #{record.rotationPercent}, #{record.months}, '0', #{record.remark}, '0',
+      #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now()
+    )
+  </insert>
+  <update id="updateByPrimaryKey">
+    update public.tb_variety
+    set variety_name = #{record.varietyName},
+      variety_shortname = #{record.varietyShortname},
+      percent = #{record.percent},
+      rotation_percent = #{record.rotationPercent},
+      months = #{record.months},
+      remark = #{record.remark},
+      update_id = #{currentUser.currentId},
+      update_by = #{currentUser.currentName},
+      update_time = now()
+    where variety_id = #{record.varietyId} and del_flag = '0' and variety_state = '0'
+  </update>
+  <select id="checkName" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_variety WHERE del_flag = '0' AND variety_state = '0'
+    AND (variety_name IN (
+      <foreach collection="names" item="vname" separator=",">
+        #{vname}
+      </foreach>
+    ) OR variety_shortname IN (
+      <foreach collection="shortnames" item="sname" separator=",">
+        #{sname}
+      </foreach>
+    ))
+    <if test="b != false">
+      AND (parent_id != #{varietyVo.varietyId} OR parent_id IS NULL)
+      <if test="varietyVo.disabled != false">
+        AND variety_id != #{varietyVo.varietyId}
+      </if>
+    </if>
+  </select>
+  <select id="list" resultType="VarietyListVo">
+      SELECT * FROM (
+      SELECT tv.variety_id first_id, tv.variety_name first_name, tv2.variety_id second_id, tv2.variety_name second_name, tv2.variety_shortname, tv2.percent, tv2.rotation_percent, tv2.months, tv2.remark
+      FROM public.tb_variety tv LEFT JOIN public.tb_variety tv2 ON tv.variety_id = tv2.parent_id AND tv2.del_flag = '0' AND tv2.variety_state = '0'
+      WHERE tv.del_flag = '0' AND tv.parent_id IS NULL AND tv.variety_state = '0' AND tv2.variety_id IS NOT NULL
+      UNION
+      SELECT variety_id first_id, variety_name first_name, variety_id second_id, '-' second_name, variety_shortname, percent, rotation_percent, months, remark
+      FROM public.tb_variety WHERE parent_id IS NULL AND del_flag = '0' AND variety_state = '0') t
+      ORDER BY t.first_id, t.second_name
+    </select>
+  <insert id="batchInsert">
+    insert into public.tb_variety (variety_name, variety_shortname,
+    percent, rotation_percent, months, parent_id, variety_state, remark, del_flag,
+    create_id, create_by, create_time,
+    update_id, update_by, update_time
+    ) values
+    <foreach collection="varietyList" separator="," item="item">
+      (
+        #{item.varietyName}, #{item.varietyShortname}, #{item.percent}, #{item.rotationPercent}, #{item.months}, #{id}, '0', #{item.remark}, '0',
+        #{currentUser.currentId}, #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now()
+      )
+    </foreach>
+  </insert>
+  <select id="getParentId" resultType="java.lang.Long">
+    SELECT parent_id FROM public.tb_variety WHERE del_flag = '0' AND variety_id = #{id} AND variety_state = '0'
+  </select>
+  <select id="selectByParentId" resultType="VarietyChildren">
+    SELECT variety_name, variety_shortname, percent, rotation_percent, months, remark FROM public.tb_variety WHERE parent_id = #{id} AND del_flag = '0' AND variety_state = '0'
+  </select>
+  <update id="delete">
+    UPDATE public.tb_variety SET del_flag = '1', update_id = #{updateId}, update_by = #{updateBy}, update_time = now() WHERE variety_id = #{varietyId} AND  del_flag = '0'
+  </update>
+  <update id="batchDelete">
+    UPDATE public.tb_variety SET del_flag = '1', update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now() WHERE del_flag = '0' AND parent_id = #{varietyVo.varietyId}
+  </update>
+  <select id="count" resultType="java.lang.Integer">
+      SELECT count(1) FROM public.tb_variety WHERE del_flag = '0' AND parent_id = #{varietyId} AND variety_state = '0'
+  </select>
+  <select id="checkContract" resultMap="BaseResultMap">
+    SELECT variety_id, variety_name FROM public.tb_variety WHERE del_flag = '0' AND variety_state = '0' AND variety_id IN (
+      <foreach collection="collection" item="item" separator=",">
+        #{item}
+      </foreach>
+    )
+  </select>
+  <select id="getSelect" resultType="java.util.Map">
+    SELECT variety_id, variety_name FROM public.tb_variety WHERE del_flag = '0' AND variety_state = '0' AND (parent_id = '' OR parent_id IS NULL)
+  </select>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbBatchPlanChangeMapper">
+
+    <resultMap type="TbBatchPlanChange" id="TbBatchPlanChangeResult">
+        <result property="id"    column="id"    />
+        <result property="order"    column="order"    />
+        <result property="batchPlanId"    column="batch_plan_id"    />
+        <result property="removeBeginDate"    column="remove_begin_date"    />
+        <result property="removeEndDate"    column="remove_end_date"    />
+        <result property="outStock"    column="out_stock"    />
+        <result property="changeRemark"    column="change_remark"    />
+        <result property="changeTime"    column="change_time"    />
+        <result property="changeInTotal"    column="change_in_total"    />
+        <result property="changeOutTotal"    column="change_out_total"    />
+    </resultMap>
+
+    <sql id="selectTbBatchPlanChangeVo">
+        select id, order, batch_plan_id, remove_begin_date, remove_end_date, out_stock, change_remark, change_time, change_in_total, change_out_total from tb_batch_plan_change
+    </sql>
+
+    <select id="selectTbBatchPlanChangeList" parameterType="TbBatchPlanChange" resultMap="TbBatchPlanChangeResult">
+        <include refid="selectTbBatchPlanChangeVo"/>
+        <where>
+            <if test="order != null "> and order = #{order}</if>
+            <if test="batchPlanId != null "> and batch_plan_id = #{batchPlanId}</if>
+            <if test="removeBeginDate != null "> and remove_begin_date = #{removeBeginDate}</if>
+            <if test="removeEndDate != null "> and remove_end_date = #{removeEndDate}</if>
+            <if test="outStock != null "> and out_stock = #{outStock}</if>
+            <if test="changeRemark != null  and changeRemark != ''"> and change_remark = #{changeRemark}</if>
+            <if test="changeTime != null "> and change_time = #{changeTime}</if>
+            <if test="changeInTotal != null "> and change_in_total = #{changeInTotal}</if>
+            <if test="changeOutTotal != null "> and change_out_total = #{changeOutTotal}</if>
+        </where>
+    </select>
+
+    <select id="selectTbBatchPlanChangeById" parameterType="Long" resultMap="TbBatchPlanChangeResult">
+        <include refid="selectTbBatchPlanChangeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbBatchPlanChange" parameterType="TbBatchPlanChange">
+        insert into public.tb_batch_plan_change
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="order != null">order,</if>
+            <if test="batchPlanId != null">batch_plan_id,</if>
+            <if test="removeBeginDate != null">remove_begin_date,</if>
+            <if test="removeEndDate != null">remove_end_date,</if>
+            <if test="outStock != null">out_stock,</if>
+            <if test="changeRemark != null">change_remark,</if>
+            <if test="changeTime != null">change_time,</if>
+            <if test="changeInTotal != null">change_in_total,</if>
+            <if test="changeOutTotal != null">change_out_total,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="order != null">#{order},</if>
+            <if test="batchPlanId != null">#{batchPlanId},</if>
+            <if test="removeBeginDate != null">#{removeBeginDate},</if>
+            <if test="removeEndDate != null">#{removeEndDate},</if>
+            <if test="outStock != null">#{outStock},</if>
+            <if test="changeRemark != null">#{changeRemark},</if>
+            <if test="changeTime != null">#{changeTime},</if>
+            <if test="changeInTotal != null">#{changeInTotal},</if>
+            <if test="changeOutTotal != null">#{changeOutTotal},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbBatchPlanChange" parameterType="TbBatchPlanChange">
+        update tb_batch_plan_change
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="order != null">order = #{order},</if>
+            <if test="batchPlanId != null">batch_plan_id = #{batchPlanId},</if>
+            <if test="removeBeginDate != null">remove_begin_date = #{removeBeginDate},</if>
+            <if test="removeEndDate != null">remove_end_date = #{removeEndDate},</if>
+            <if test="outStock != null">out_stock = #{outStock},</if>
+            <if test="changeRemark != null">change_remark = #{changeRemark},</if>
+            <if test="changeTime != null">change_time = #{changeTime},</if>
+            <if test="changeInTotal != null">change_in_total = #{changeInTotal},</if>
+            <if test="changeOutTotal != null">change_out_total = #{changeOutTotal},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbBatchPlanChangeById" parameterType="Long">
+        delete from tb_batch_plan_change where id = #{id}
+    </delete>
+
+    <delete id="deleteTbBatchPlanChangeByIds" parameterType="String">
+        delete from tb_batch_plan_change where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

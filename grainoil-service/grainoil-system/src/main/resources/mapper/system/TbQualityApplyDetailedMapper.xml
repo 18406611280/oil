@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.TbQualityApplyDetailedMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.quality.TbQualityApplyDetailed">
+    <id column="id" property="id" />
+    <result column="inventory_id" property="inventoryId" />
+    <result column="sampling_code" property="samplingCode" />
+    <result column="apply_id" property="applyId" />
+    <result column="variety_id" property="varietyId" />
+    <result column="sample_code" property="sampleCode" />
+    <result column="variety" property="variety" />
+    <result column="sample_name" property="sampleName" />
+    <result column="storehouse_id" property="storehouseId" />
+    <result column="storehouse_name" property="storehouseName" />
+    <result column="heap_id" property="heapId" />
+    <result column="heap_name" property="heapName" />
+    <result column="quantity" property="quantity" />
+    <result column="producing_area" property="producingArea" />
+    <result column="particular_year" property="particularYear" />
+    <result column="storage_date" property="storageDate" />
+    <result column="batch_code" property="batchCode" />
+    <result column="grade" property="grade" />
+    <result column="packing_type" property="packingType" />
+    <result column="remark" property="remark" />
+    <result column="contract_id" property="contractId" />
+    <result column="receipt_id" property="receiptId" />
+    <result column="sampling_time" property="samplingTime" />
+    <result column="state" property="state" />
+    <result column="enclosure" property="enclosure" />
+    <result column="report_name" property="reportName" />
+    <result column="check_result" property="checkResult" />
+    <result column="report_code" property="reportCode" />
+    <result column="report_time" property="reportTime" />
+    <result column="examine_cycle" property="examineCycle" />
+    <result column="is_overdue" property="isOverdue" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, sampling_code, apply_id, variety_id, sample_code, variety, sample_name, storehouse_id, 
+    storehouse_name, heap_id, heap_name, quantity, producing_area, particular_year, storage_date, 
+    batch_code, grade, packing_type, remark, contract_id, receipt_id, sampling_time, 
+    state, enclosure, report_name, check_result, report_code, report_time, examine_cycle, 
+    is_overdue
+  </sql>
+  <select id="selectByExample" parameterType="com.grainoil.system.domain.example.TbQualityApplyDetailedExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_quality_apply_detailed
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_quality_apply_detailed
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_quality_apply_detailed
+    where id = #{id}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.grainoil.system.domain.example.TbQualityApplyDetailedExample">
+    delete from tb_quality_apply_detailed
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.grainoil.system.domain.quality.TbQualityApplyDetailed" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into tb_quality_apply_detailed (inventory_id,sampling_code, apply_id,
+      variety_id, sample_code, variety, 
+      sample_name, storehouse_id, storehouse_name, 
+      heap_id, heap_name, quantity, 
+      producing_area, particular_year, storage_date, 
+      batch_code, grade, packing_type, 
+      remark, contract_id, receipt_id, 
+      sampling_time, state, enclosure, 
+      report_name, check_result, report_code, 
+      report_time, examine_cycle, is_overdue
+      )
+    values (#{inventoryId},#{samplingCode}, #{applyId},
+      #{varietyId}, #{sampleCode}, #{variety}, 
+      #{sampleName}, #{storehouseId}, #{storehouseName}, 
+      #{heapId}, #{heapName}, #{quantity}, 
+      #{producingArea}, #{particularYear}, #{storageDate}, 
+      #{batchCode}, #{grade}, #{packingType}, 
+      #{remark}, #{contractId}, #{receiptId}, 
+      #{samplingTime}, #{state}, #{enclosure}, 
+      #{reportName}, #{checkResult}, #{reportCode}, 
+      #{reportTime}, #{examineCycle}, #{isOverdue}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.grainoil.system.domain.quality.TbQualityApplyDetailed">
+    insert into tb_quality_apply_detailed
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="samplingCode != null">
+        sampling_code,
+      </if>
+      <if test="applyId != null">
+        apply_id,
+      </if>
+      <if test="varietyId != null">
+        variety_id,
+      </if>
+      <if test="sampleCode != null">
+        sample_code,
+      </if>
+      <if test="variety != null">
+        variety,
+      </if>
+      <if test="sampleName != null">
+        sample_name,
+      </if>
+      <if test="storehouseId != null">
+        storehouse_id,
+      </if>
+      <if test="storehouseName != null">
+        storehouse_name,
+      </if>
+      <if test="heapId != null">
+        heap_id,
+      </if>
+      <if test="heapName != null">
+        heap_name,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="producingArea != null">
+        producing_area,
+      </if>
+      <if test="particularYear != null">
+        particular_year,
+      </if>
+      <if test="storageDate != null">
+        storage_date,
+      </if>
+      <if test="batchCode != null">
+        batch_code,
+      </if>
+      <if test="grade != null">
+        grade,
+      </if>
+      <if test="packingType != null">
+        packing_type,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="contractId != null">
+        contract_id,
+      </if>
+      <if test="receiptId != null">
+        receipt_id,
+      </if>
+      <if test="samplingTime != null">
+        sampling_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="enclosure != null">
+        enclosure,
+      </if>
+      <if test="reportName != null">
+        report_name,
+      </if>
+      <if test="checkResult != null">
+        check_result,
+      </if>
+      <if test="reportCode != null">
+        report_code,
+      </if>
+      <if test="reportTime != null">
+        report_time,
+      </if>
+      <if test="examineCycle != null">
+        examine_cycle,
+      </if>
+      <if test="isOverdue != null">
+        is_overdue,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="samplingCode != null">
+        #{samplingCode},
+      </if>
+      <if test="applyId != null">
+        #{applyId},
+      </if>
+      <if test="varietyId != null">
+        #{varietyId},
+      </if>
+      <if test="sampleCode != null">
+        #{sampleCode},
+      </if>
+      <if test="variety != null">
+        #{variety},
+      </if>
+      <if test="sampleName != null">
+        #{sampleName},
+      </if>
+      <if test="storehouseId != null">
+        #{storehouseId},
+      </if>
+      <if test="storehouseName != null">
+        #{storehouseName},
+      </if>
+      <if test="heapId != null">
+        #{heapId},
+      </if>
+      <if test="heapName != null">
+        #{heapName},
+      </if>
+      <if test="quantity != null">
+        #{quantity},
+      </if>
+      <if test="producingArea != null">
+        #{producingArea},
+      </if>
+      <if test="particularYear != null">
+        #{particularYear},
+      </if>
+      <if test="storageDate != null">
+        #{storageDate},
+      </if>
+      <if test="batchCode != null">
+        #{batchCode},
+      </if>
+      <if test="grade != null">
+        #{grade},
+      </if>
+      <if test="packingType != null">
+        #{packingType},
+      </if>
+      <if test="remark != null">
+        #{remark},
+      </if>
+      <if test="contractId != null">
+        #{contractId},
+      </if>
+      <if test="receiptId != null">
+        #{receiptId},
+      </if>
+      <if test="samplingTime != null">
+        #{samplingTime},
+      </if>
+      <if test="state != null">
+        #{state},
+      </if>
+      <if test="enclosure != null">
+        #{enclosure},
+      </if>
+      <if test="reportName != null">
+        #{reportName},
+      </if>
+      <if test="checkResult != null">
+        #{checkResult},
+      </if>
+      <if test="reportCode != null">
+        #{reportCode},
+      </if>
+      <if test="reportTime != null">
+        #{reportTime},
+      </if>
+      <if test="examineCycle != null">
+        #{examineCycle},
+      </if>
+      <if test="isOverdue != null">
+        #{isOverdue},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.grainoil.system.domain.example.TbQualityApplyDetailedExample" resultType="java.lang.Long">
+    select count(*) from tb_quality_apply_detailed
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_quality_apply_detailed
+    <set>
+      <if test="record.id != null">
+        id = #{record.id},
+      </if>
+      <if test="record.samplingCode != null">
+        sampling_code = #{record.samplingCode},
+      </if>
+      <if test="record.applyId != null">
+        apply_id = #{record.applyId},
+      </if>
+      <if test="record.varietyId != null">
+        variety_id = #{record.varietyId},
+      </if>
+      <if test="record.sampleCode != null">
+        sample_code = #{record.sampleCode},
+      </if>
+      <if test="record.variety != null">
+        variety = #{record.variety},
+      </if>
+      <if test="record.sampleName != null">
+        sample_name = #{record.sampleName},
+      </if>
+      <if test="record.storehouseId != null">
+        storehouse_id = #{record.storehouseId},
+      </if>
+      <if test="record.storehouseName != null">
+        storehouse_name = #{record.storehouseName},
+      </if>
+      <if test="record.heapId != null">
+        heap_id = #{record.heapId},
+      </if>
+      <if test="record.heapName != null">
+        heap_name = #{record.heapName},
+      </if>
+      <if test="record.quantity != null">
+        quantity = #{record.quantity},
+      </if>
+      <if test="record.producingArea != null">
+        producing_area = #{record.producingArea},
+      </if>
+      <if test="record.particularYear != null">
+        particular_year = #{record.particularYear},
+      </if>
+      <if test="record.storageDate != null">
+        storage_date = #{record.storageDate},
+      </if>
+      <if test="record.batchCode != null">
+        batch_code = #{record.batchCode},
+      </if>
+      <if test="record.grade != null">
+        grade = #{record.grade},
+      </if>
+      <if test="record.packingType != null">
+        packing_type = #{record.packingType},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark},
+      </if>
+      <if test="record.contractId != null">
+        contract_id = #{record.contractId},
+      </if>
+      <if test="record.receiptId != null">
+        receipt_id = #{record.receiptId},
+      </if>
+      <if test="record.samplingTime != null">
+        sampling_time = #{record.samplingTime},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state},
+      </if>
+      <if test="record.enclosure != null">
+        enclosure = #{record.enclosure},
+      </if>
+      <if test="record.reportName != null">
+        report_name = #{record.reportName},
+      </if>
+      <if test="record.checkResult != null">
+        check_result = #{record.checkResult},
+      </if>
+      <if test="record.reportCode != null">
+        report_code = #{record.reportCode},
+      </if>
+      <if test="record.reportTime != null">
+        report_time = #{record.reportTime},
+      </if>
+      <if test="record.examineCycle != null">
+        examine_cycle = #{record.examineCycle},
+      </if>
+      <if test="record.isOverdue != null">
+        is_overdue = #{record.isOverdue},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_quality_apply_detailed
+    set id = #{record.id},
+      sampling_code = #{record.samplingCode},
+      apply_id = #{record.applyId},
+      variety_id = #{record.varietyId},
+      sample_code = #{record.sampleCode},
+      variety = #{record.variety},
+      sample_name = #{record.sampleName},
+      storehouse_id = #{record.storehouseId},
+      storehouse_name = #{record.storehouseName},
+      heap_id = #{record.heapId},
+      heap_name = #{record.heapName},
+      quantity = #{record.quantity},
+      producing_area = #{record.producingArea},
+      particular_year = #{record.particularYear},
+      storage_date = #{record.storageDate},
+      batch_code = #{record.batchCode},
+      grade = #{record.grade},
+      packing_type = #{record.packingType},
+      remark = #{record.remark},
+      contract_id = #{record.contractId},
+      receipt_id = #{record.receiptId},
+      sampling_time = #{record.samplingTime},
+      state = #{record.state},
+      enclosure = #{record.enclosure},
+      report_name = #{record.reportName},
+      check_result = #{record.checkResult},
+      report_code = #{record.reportCode},
+      report_time = #{record.reportTime},
+      examine_cycle = #{record.examineCycle},
+      is_overdue = #{record.isOverdue}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.grainoil.system.domain.quality.TbQualityApplyDetailed">
+    update tb_quality_apply_detailed
+    <set>
+      <if test="samplingCode != null">
+        sampling_code = #{samplingCode},
+      </if>
+      <if test="applyId != null">
+        apply_id = #{applyId},
+      </if>
+      <if test="varietyId != null">
+        variety_id = #{varietyId},
+      </if>
+      <if test="sampleCode != null">
+        sample_code = #{sampleCode},
+      </if>
+      <if test="variety != null">
+        variety = #{variety},
+      </if>
+      <if test="sampleName != null">
+        sample_name = #{sampleName},
+      </if>
+      <if test="storehouseId != null">
+        storehouse_id = #{storehouseId},
+      </if>
+      <if test="storehouseName != null">
+        storehouse_name = #{storehouseName},
+      </if>
+      <if test="heapId != null">
+        heap_id = #{heapId},
+      </if>
+      <if test="heapName != null">
+        heap_name = #{heapName},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity},
+      </if>
+      <if test="producingArea != null">
+        producing_area = #{producingArea},
+      </if>
+      <if test="particularYear != null">
+        particular_year = #{particularYear},
+      </if>
+      <if test="storageDate != null">
+        storage_date = #{storageDate},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode},
+      </if>
+      <if test="grade != null">
+        grade = #{grade},
+      </if>
+      <if test="packingType != null">
+        packing_type = #{packingType},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
+      <if test="contractId != null">
+        contract_id = #{contractId},
+      </if>
+      <if test="receiptId != null">
+        receipt_id = #{receiptId},
+      </if>
+      <if test="samplingTime != null">
+        sampling_time = #{samplingTime},
+      </if>
+      <if test="state != null">
+        state = #{state},
+      </if>
+      <if test="enclosure != null">
+        enclosure = #{enclosure},
+      </if>
+      <if test="reportName != null">
+        report_name = #{reportName},
+      </if>
+      <if test="checkResult != null">
+        check_result = #{checkResult},
+      </if>
+      <if test="reportCode != null">
+        report_code = #{reportCode},
+      </if>
+      <if test="reportTime != null">
+        report_time = #{reportTime},
+      </if>
+      <if test="examineCycle != null">
+        examine_cycle = #{examineCycle},
+      </if>
+      <if test="isOverdue != null">
+        is_overdue = #{isOverdue},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.quality.TbQualityApplyDetailed">
+    update tb_quality_apply_detailed
+    set sampling_code = #{samplingCode},
+      apply_id = #{applyId},
+      variety_id = #{varietyId},
+      sample_code = #{sampleCode},
+      variety = #{variety},
+      sample_name = #{sampleName},
+      storehouse_id = #{storehouseId},
+      storehouse_name = #{storehouseName},
+      heap_id = #{heapId},
+      heap_name = #{heapName},
+      quantity = #{quantity},
+      producing_area = #{producingArea},
+      particular_year = #{particularYear},
+      storage_date = #{storageDate},
+      batch_code = #{batchCode},
+      grade = #{grade},
+      packing_type = #{packingType},
+      remark = #{remark},
+      contract_id = #{contractId},
+      receipt_id = #{receiptId},
+      sampling_time = #{samplingTime},
+      state = #{state},
+      enclosure = #{enclosure},
+      report_name = #{reportName},
+      check_result = #{checkResult},
+      report_code = #{reportCode},
+      report_time = #{reportTime},
+      examine_cycle = #{examineCycle},
+      is_overdue = #{isOverdue}
+    where id = #{id}
+  </update>
+</mapper>

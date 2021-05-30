@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbBatchPlanInfoMapper">
+
+    <resultMap type="TbBatchPlanInfo" id="TbBatchPlanInfoResult">
+        <result property="id"    column="id"    />
+        <result property="batchPlanId"    column="batch_plan_id"    />
+        <result property="grainDepotId"    column="grain_depot_id"    />
+        <result property="grainDepotName"    column="grain_depot_name"    />
+        <result property="foodstuffTpye"    column="foodstuff_tpye"    />
+        <result property="removeBeginDate"    column="remove_begin_date"    />
+        <result property="removeEndDate"    column="remove_end_date"    />
+        <result property="outStock"    column="out_stock"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="foodstuffTpye2"    column="foodstuff_tpye2"    />
+        <result property="moveInBeginDate"    column="move_in_begin_date"    />
+        <result property="moveInEndDate"    column="move_in_end_date"    />
+        <result property="inStock"    column="in_stock"    />
+        <result property="buyPrice"    column="buy_price"    />
+        <result property="grainDepotId2"    column="grain_depot_id2"    />
+        <result property="grainDepotName2"    column="grain_depot_name2"    />
+        <result property="changeState"    column="change_state"    />
+        <result property="changeRemark"    column="change_remark"    />
+        <result property="changeTime"    column="change_time"    />
+        <result property="changeInTotal"    column="change_in_total"    />
+        <result property="changeOutTotal"    column="change_out_total"    />
+    </resultMap>
+
+    <sql id="selectTbBatchPlanInfoVo">
+        select id, batch_plan_id, grain_depot_id, grain_depot_name, foodstuff_tpye, remove_begin_date, remove_end_date, out_stock, sale_price, foodstuff_tpye2, move_in_begin_date, move_in_end_date, in_stock, buy_price, grain_depot_id2, grain_depot_name2, change_state, change_remark, change_time, change_in_total, change_out_total from tb_batch_plan_info
+    </sql>
+
+    <select id="selectTbBatchPlanInfoList" parameterType="TbBatchPlanInfo" resultMap="TbBatchPlanInfoResult">
+        <include refid="selectTbBatchPlanInfoVo"/>
+        <where>
+            <if test="batchPlanId != null "> and batch_plan_id = #{batchPlanId}</if>
+            <if test="grainDepotId != null "> and grain_depot_id = #{grainDepotId}</if>
+            <if test="grainDepotName != null  and grainDepotName != ''"> and grain_depot_name like concat('%', #{grainDepotName}, '%')</if>
+            <if test="foodstuffTpye != null  and foodstuffTpye != ''"> and foodstuff_tpye = #{foodstuffTpye}</if>
+            <if test="removeBeginDate != null "> and remove_begin_date = #{removeBeginDate}</if>
+            <if test="removeEndDate != null "> and remove_end_date = #{removeEndDate}</if>
+            <if test="outStock != null "> and out_stock = #{outStock}</if>
+            <if test="salePrice != null "> and sale_price = #{salePrice}</if>
+            <if test="foodstuffTpye2 != null  and foodstuffTpye2 != ''"> and foodstuff_tpye2 = #{foodstuffTpye2}</if>
+            <if test="moveInBeginDate != null "> and move_in_begin_date = #{moveInBeginDate}</if>
+            <if test="moveInEndDate != null "> and move_in_end_date = #{moveInEndDate}</if>
+            <if test="inStock != null "> and in_stock = #{inStock}</if>
+            <if test="buyPrice != null "> and buy_price = #{buyPrice}</if>
+            <if test="grainDepotId2 != null "> and grain_depot_id2 = #{grainDepotId2}</if>
+            <if test="grainDepotName2 != null  and grainDepotName2 != ''"> and grain_depot_name2 = #{grainDepotName2}</if>
+            <if test="changeState != null  and changeState != ''"> and change_state = #{changeState}</if>
+            <if test="changeRemark != null  and changeRemark != ''"> and change_remark = #{changeRemark}</if>
+            <if test="changeTime != null "> and change_time = #{changeTime}</if>
+            <if test="changeInTotal != null "> and change_in_total = #{changeInTotal}</if>
+            <if test="changeOutTotal != null "> and change_out_total = #{changeOutTotal}</if>
+        </where>
+    </select>
+
+    <select id="selectTbBatchPlanInfoById" parameterType="Long" resultMap="TbBatchPlanInfoResult">
+        <include refid="selectTbBatchPlanInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbBatchPlanInfo" parameterType="TbBatchPlanInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_batch_plan_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="batchPlanId != null">batch_plan_id,</if>
+            <if test="grainDepotId != null">grain_depot_id,</if>
+            <if test="grainDepotName != null">grain_depot_name,</if>
+            <if test="foodstuffTpye != null">foodstuff_tpye,</if>
+            <if test="removeBeginDate != null">remove_begin_date,</if>
+            <if test="removeEndDate != null">remove_end_date,</if>
+            <if test="outStock != null">out_stock,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="foodstuffTpye2 != null">foodstuff_tpye2,</if>
+            <if test="moveInBeginDate != null">move_in_begin_date,</if>
+            <if test="moveInEndDate != null">move_in_end_date,</if>
+            <if test="inStock != null">in_stock,</if>
+            <if test="buyPrice != null">buy_price,</if>
+            <if test="grainDepotId2 != null">grain_depot_id2,</if>
+            <if test="grainDepotName2 != null">grain_depot_name2,</if>
+            <if test="changeState != null">change_state,</if>
+            <if test="changeRemark != null">change_remark,</if>
+            <if test="changeTime != null">change_time,</if>
+            <if test="changeInTotal != null">change_in_total,</if>
+            <if test="changeOutTotal != null">change_out_total,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="batchPlanId != null">#{batchPlanId},</if>
+            <if test="grainDepotId != null">#{grainDepotId},</if>
+            <if test="grainDepotName != null">#{grainDepotName},</if>
+            <if test="foodstuffTpye != null">#{foodstuffTpye},</if>
+            <if test="removeBeginDate != null">#{removeBeginDate},</if>
+            <if test="removeEndDate != null">#{removeEndDate},</if>
+            <if test="outStock != null">#{outStock},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="foodstuffTpye2 != null">#{foodstuffTpye2},</if>
+            <if test="moveInBeginDate != null">#{moveInBeginDate},</if>
+            <if test="moveInEndDate != null">#{moveInEndDate},</if>
+            <if test="inStock != null">#{inStock},</if>
+            <if test="buyPrice != null">#{buyPrice},</if>
+            <if test="grainDepotId2 != null">#{grainDepotId2},</if>
+            <if test="grainDepotName2 != null">#{grainDepotName2},</if>
+            <if test="changeState != null">#{changeState},</if>
+            <if test="changeRemark != null">#{changeRemark},</if>
+            <if test="changeTime != null">#{changeTime},</if>
+            <if test="changeInTotal != null">#{changeInTotal},</if>
+            <if test="changeOutTotal != null">#{changeOutTotal},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbBatchPlanInfo" parameterType="TbBatchPlanInfo">
+        update tb_batch_plan_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="batchPlanId != null">batch_plan_id = #{batchPlanId},</if>
+            <if test="grainDepotId != null">grain_depot_id = #{grainDepotId},</if>
+            <if test="grainDepotName != null">grain_depot_name = #{grainDepotName},</if>
+            <if test="foodstuffTpye != null">foodstuff_tpye = #{foodstuffTpye},</if>
+            <if test="removeBeginDate != null">remove_begin_date = #{removeBeginDate},</if>
+            <if test="removeEndDate != null">remove_end_date = #{removeEndDate},</if>
+            <if test="outStock != null">out_stock = #{outStock},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="foodstuffTpye2 != null">foodstuff_tpye2 = #{foodstuffTpye2},</if>
+            <if test="moveInBeginDate != null">move_in_begin_date = #{moveInBeginDate},</if>
+            <if test="moveInEndDate != null">move_in_end_date = #{moveInEndDate},</if>
+            <if test="inStock != null">in_stock = #{inStock},</if>
+            <if test="buyPrice != null">buy_price = #{buyPrice},</if>
+            <if test="grainDepotId2 != null">grain_depot_id2 = #{grainDepotId2},</if>
+            <if test="grainDepotName2 != null">grain_depot_name2 = #{grainDepotName2},</if>
+            <if test="changeState != null">change_state = #{changeState},</if>
+            <if test="changeRemark != null">change_remark = #{changeRemark},</if>
+            <if test="changeTime != null">change_time = #{changeTime},</if>
+            <if test="changeInTotal != null">change_in_total = #{changeInTotal},</if>
+            <if test="changeOutTotal != null">change_out_total = #{changeOutTotal},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="editBatchPlanInfo" parameterType="com.grainoil.system.domain.vo.rotate.BatchPlanInfo">
+        update tb_batch_plan_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="batchPlanId != null">batch_plan_id = #{batchPlanId},</if>
+            <if test="grainDepotId != null">grain_depot_id = #{grainDepotId},</if>
+            <if test="grainDepotName != null">grain_depot_name = #{grainDepotName},</if>
+            <if test="foodstuffTpye != null">foodstuff_tpye = #{foodstuffTpye},</if>
+            <if test="removeBeginDate != null">remove_begin_date = #{removeBeginDate},</if>
+            <if test="removeEndDate != null">remove_end_date = #{removeEndDate},</if>
+            <if test="outStock != null">out_stock = #{outStock},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="foodstuffTpye2 != null">foodstuff_tpye2 = #{foodstuffTpye2},</if>
+            <if test="moveInBeginDate != null">move_in_begin_date = #{moveInBeginDate},</if>
+            <if test="moveInEndDate != null">move_in_end_date = #{moveInEndDate},</if>
+            <if test="inStock != null">in_stock = #{inStock},</if>
+            <if test="buyPrice != null">buy_price = #{buyPrice},</if>
+            <if test="grainDepotId2 != null">grain_depot_id2 = #{grainDepotId2},</if>
+            <if test="grainDepotName2 != null">grain_depot_name2 = #{grainDepotName2},</if>
+            <if test="changeState != null">change_state = #{changeState},</if>
+            <if test="changeRemark != null">change_remark = #{changeRemark},</if>
+            <if test="changeTime != null">change_time = #{changeTime},</if>
+            <if test="changeInTotal != null">change_in_total = #{changeInTotal},</if>
+            <if test="changeOutTotal != null">change_out_total = #{changeOutTotal},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBatchPlanDepotInfoByBatchPlanInfoId" parameterType="Long">
+        delete from public.tb_batch_plan_depot_info where batch_plan_info_id = #{batchPlanInfoId}
+    </delete>
+
+    <insert id="batchBatchPlanDepotInfo">
+        insert into public.tb_batch_plan_depot_info( id, batch_plan_info_id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name, heap_id, child_heap_id, child_heap_code, heap_name, foodstuff_tpye, producing_area, move_in_date, deposit_type, stock, out_stock, remark, contract_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.batchPlanInfoId}, #{item.grainDepotId}, #{item.grainDepotName}, #{item.storehouseId}, #{item.storehouseName}, #{item.heapId}, #{item.childHeapId}, #{item.childHeapCode}, #{item.heapName}, #{item.foodstuffTpye}, #{item.producingArea}, #{item.moveInDate}, #{item.depositType}, #{item.stock}, #{item.outStock}, #{item.remark}, #{item.contractId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteTbBatchPlanInfoById" parameterType="Long">
+        delete from tb_batch_plan_info where id = #{id}
+    </delete>
+
+    <delete id="deleteTbBatchPlanInfoByIds" parameterType="String">
+        delete from tb_batch_plan_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getBatchPlanInfoByBatchPlanId" resultType="com.grainoil.system.domain.vo.rotate.BatchPlanInfo" parameterType="long">
+        select
+            *
+        from public.tb_batch_plan_info
+        where batch_plan_id = #{batchPlanId};
+    </select>
+
+    <select id="getBatchPlanById" parameterType="long" resultType="com.grainoil.system.domain.vo.rotate.BatchPlan">
+        select
+            tbp.batch_code batchCode,
+            tbpi.foodstuff_tpye type,
+            tbpi.out_stock stockNum,
+            tbpi.grain_depot_name grainDepotName
+        from public.tb_batch_plan tbp
+        left  join public.tb_batch_plan_info tbpi on tbp.id = tbpi.batch_plan_id
+        left join  public.tb_batch_plan_depot_info tbpdi on tbpi.id = tbpdi.batch_plan_info_id
+        where tbp.id = #{id}
+    </select>
+
+
+    <insert id="insertBatchPlanInfo" parameterType="BatchPlanInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_batch_plan_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="batchPlanId != null">batch_plan_id,</if>
+            <if test="grainDepotId != null">grain_depot_id,</if>
+            <if test="grainDepotName != null">grain_depot_name,</if>
+            <if test="foodstuffTpye != null">foodstuff_tpye,</if>
+            <if test="removeBeginDate != null">remove_begin_date,</if>
+            <if test="removeEndDate != null">remove_end_date,</if>
+            <if test="outStock != null">out_stock,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="foodstuffTpye2 != null">foodstuff_tpye2,</if>
+            <if test="moveInBeginDate != null">move_in_begin_date,</if>
+            <if test="moveInEndDate != null">move_in_end_date,</if>
+            <if test="inStock != null">in_stock,</if>
+            <if test="buyPrice != null">buy_price,</if>
+            <if test="grainDepotId2 != null">grain_depot_id2,</if>
+            <if test="grainDepotName2 != null">grain_depot_name2,</if>
+            <if test="changeState != null">change_state,</if>
+            <if test="changeRemark != null">change_remark,</if>
+            <if test="changeTime != null">change_time,</if>
+            <if test="changeInTotal != null">change_in_total,</if>
+            <if test="changeOutTotal != null">change_out_total,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="batchPlanId != null">#{batchPlanId},</if>
+            <if test="grainDepotId != null">#{grainDepotId},</if>
+            <if test="grainDepotName != null">#{grainDepotName},</if>
+            <if test="foodstuffTpye != null">#{foodstuffTpye},</if>
+            <if test="removeBeginDate != null">#{removeBeginDate},</if>
+            <if test="removeEndDate != null">#{removeEndDate},</if>
+            <if test="outStock != null">#{outStock},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="foodstuffTpye2 != null">#{foodstuffTpye2},</if>
+            <if test="moveInBeginDate != null">#{moveInBeginDate},</if>
+            <if test="moveInEndDate != null">#{moveInEndDate},</if>
+            <if test="inStock != null">#{inStock},</if>
+            <if test="buyPrice != null">#{buyPrice},</if>
+            <if test="grainDepotId2 != null">#{grainDepotId2},</if>
+            <if test="grainDepotName2 != null">#{grainDepotName2},</if>
+            <if test="changeState != null">#{changeState},</if>
+            <if test="changeRemark != null">#{changeRemark},</if>
+            <if test="changeTime != null">#{changeTime},</if>
+            <if test="changeInTotal != null">#{changeInTotal},</if>
+            <if test="changeOutTotal != null">#{changeOutTotal},</if>
+        </trim>
+    </insert>
+</mapper>

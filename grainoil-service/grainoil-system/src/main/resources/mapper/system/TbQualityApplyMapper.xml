@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.quality.TbQualityApplyMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.quality.TbQualityApply">
+    <id column="id" property="id" />
+    <result column="grain_owner_id" property="grainOwnerId" />
+    <result column="grain_owner_name" property="grainOwnerName" />
+    <result column="apply_type" property="applyType" />
+    <result column="apply_code" property="applyCode" />
+    <result column="quality_org" property="qualityOrg" />
+    <result column="organize_id" property="organizeId" />
+    <result column="organize_name" property="organizeName" />
+    <result column="apply_date" property="applyDate" />
+    <result column="samplers" property="samplers" />
+    <result column="grain_depot_id" property="grainDepotId" />
+    <result column="grain_depot_name" property="grainDepotName" />
+    <result column="grain_depot_position" property="grainDepotPosition" />
+    <result column="remark" property="remark" />
+    <result column="actual_sampling_date" property="actualSamplingDate" />
+    <result column="state" property="state" />
+    <result column="create_by" property="createBy" />
+    <result column="create_id" property="createId" />
+    <result column="create_time" property="createTime" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_id" property="updateId" />
+    <result column="update_time" property="updateTime" />
+    <result column="del_flag" property="delFlag" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, grain_owner_id, grain_owner_name, apply_type, apply_code, quality_org, organize_id, 
+    organize_name, apply_date, samplers, grain_depot_id, grain_depot_name, grain_depot_position, 
+    remark, actual_sampling_date, state, create_by, create_id, create_time, update_by, 
+    update_id, update_time, del_flag
+  </sql>
+  <select id="selectByExample" parameterType="com.grainoil.system.domain.quality.TbQualityApply" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_quality_apply
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_quality_apply
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_quality_apply
+    where id = #{id}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.grainoil.system.domain.quality.TbQualityApply">
+    delete from tb_quality_apply
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.grainoil.system.domain.quality.TbQualityApply" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into tb_quality_apply (grain_owner_id, grain_owner_name, 
+      apply_type, apply_code, quality_org, 
+      organize_id, organize_name, apply_date, 
+      samplers, grain_depot_id, grain_depot_name, 
+      grain_depot_position, remark, actual_sampling_date, 
+      state, create_by, create_id, 
+      create_time, update_by, update_id, 
+      update_time, del_flag)
+    values (#{grainOwnerId}, #{grainOwnerName}, 
+      #{applyType}, #{applyCode}, #{qualityOrg}, 
+      #{organizeId}, #{organizeName}, #{applyDate}, 
+      #{samplers}, #{grainDepotId}, #{grainDepotName}, 
+      #{grainDepotPosition}, #{remark}, #{actualSamplingDate}, 
+      #{state}, #{createBy}, #{createId}, 
+      #{createTime}, #{updateBy}, #{updateId}, 
+      #{updateTime}, #{delFlag})
+  </insert>
+  <insert id="insertSelective" parameterType="com.grainoil.system.domain.quality.TbQualityApply">
+    insert into tb_quality_apply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="grainOwnerId != null">
+        grain_owner_id,
+      </if>
+      <if test="grainOwnerName != null">
+        grain_owner_name,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+      <if test="qualityOrg != null">
+        quality_org,
+      </if>
+      <if test="organizeId != null">
+        organize_id,
+      </if>
+      <if test="organizeName != null">
+        organize_name,
+      </if>
+      <if test="applyDate != null">
+        apply_date,
+      </if>
+      <if test="samplers != null">
+        samplers,
+      </if>
+      <if test="grainDepotId != null">
+        grain_depot_id,
+      </if>
+      <if test="grainDepotName != null">
+        grain_depot_name,
+      </if>
+      <if test="grainDepotPosition != null">
+        grain_depot_position,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="actualSamplingDate != null">
+        actual_sampling_date,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="grainOwnerId != null">
+        #{grainOwnerId},
+      </if>
+      <if test="grainOwnerName != null">
+        #{grainOwnerName},
+      </if>
+      <if test="applyType != null">
+        #{applyType},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode},
+      </if>
+      <if test="qualityOrg != null">
+        #{qualityOrg},
+      </if>
+      <if test="organizeId != null">
+        #{organizeId},
+      </if>
+      <if test="organizeName != null">
+        #{organizeName},
+      </if>
+      <if test="applyDate != null">
+        #{applyDate},
+      </if>
+      <if test="samplers != null">
+        #{samplers},
+      </if>
+      <if test="grainDepotId != null">
+        #{grainDepotId},
+      </if>
+      <if test="grainDepotName != null">
+        #{grainDepotName},
+      </if>
+      <if test="grainDepotPosition != null">
+        #{grainDepotPosition},
+      </if>
+      <if test="remark != null">
+        #{remark},
+      </if>
+      <if test="actualSamplingDate != null">
+        #{actualSamplingDate},
+      </if>
+      <if test="state != null">
+        #{state},
+      </if>
+      <if test="createBy != null">
+        #{createBy},
+      </if>
+      <if test="createId != null">
+        #{createId},
+      </if>
+      <if test="createTime != null">
+        #{createTime},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy},
+      </if>
+      <if test="updateId != null">
+        #{updateId},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectPage" parameterType="com.grainoil.system.domain.quality.dto.SampleApplyPageDto" resultType="com.grainoil.system.domain.vo.quality.SampleQualityApplyPageVo">
+    SELECT a.* FROM tb_quality_apply a LEFT JOIN tb_quality_apply_detailed d ON a.id = d.apply_id
+    WHERE apply_type = 1
+    <if test="grainDepotId != null">
+      and a.grain_depot_id = #{grainDepotId}
+    </if>
+    <if test="varietyId != null">
+      and d.variety_id = #{varietyId}
+    </if>
+    GROUP BY a.id
+  </select>
+
+  <select id="selectQualityPage" resultType="com.grainoil.system.domain.vo.quality.SampleQualityPageVo">
+    SELECT * FROM tb_quality_apply a LEFT JOIN tb_quality_apply_detailed d ON a.id = d.apply_id
+    WHERE apply_type = #{applyType}
+    <if test="grainDepotId != null">
+      and a.grain_depot_id = #{samplePageDto.grainDepotId}
+    </if>
+    <if test="varietyId != null">
+      and d.variety_id = #{samplePageDto.varietyId}
+    </if>
+    <if test="applyStartDate != null">
+      and a.apply_date &gt;= #{samplePageDto.applyStartDate}
+    </if>
+    <if test="applyEndDate != null">
+      and a.apply_date &lt;= #{samplePageDto.applyEndDate}
+    </if>
+    <if test="applyCode != null">
+      and a.apply_code = #{samplePageDto.applyCode}
+    </if>
+    <if test="batchCode != null">
+      and d.batch_code = #{samplePageDto.batchCode}
+    </if>
+  </select>
+
+  <select id="selectSamplePage" parameterType="com.grainoil.system.domain.quality.dto.SampleRegisterPageDto" resultType="com.grainoil.system.domain.vo.quality.SampleRegistrationPageVo">
+    SELECT a.id as applyId,
+           a.apply_code as applyCode, d.sample_code as sampleCode,
+           a.organize_name as organizeName,d.batch_code as batchCode,
+           a.grain_depot_name as grainDepotName,d.quantity as quantity,
+           d.sampling_time as samplingTime,a.samplers as samplers,
+           d.storehouse_name as storehouseName,d.heap_name as heapName,
+           d.producing_area as producingArea,d.particular_year as particularYear,d.remark as remark FROM tb_quality_apply a INNER JOIN tb_quality_apply_detailed d ON a.id = d.apply_id
+    WHERE a.state = '5'
+    <if test="sampleCode != null">
+      and d.sample_code = #{sampleCode}
+    </if>
+    <if test="applyCode != null">
+      and a.apply_code = #{applyCode}
+    </if>
+    <if test="grainDepotId != null">
+      and a.grain_depot_id = #{grainDepotId}
+    </if>
+    <if test="batchCode != null">
+      and d.batch_code like #{batchCode}
+    </if>
+    <if test="storehouseId != null">
+      and d.storehouse_id = #{storehouseId}
+    </if>
+    <if test="applyStartDate != null">
+      and a.apply_date &gt;= #{applyStartDate}
+    </if>
+    <if test="applyEndDate != null">
+      and a.apply_date &lt;= #{applyEndDate}
+    </if>
+  </select>
+
+  <select id="selectQualityReportPage" parameterType="com.grainoil.system.domain.quality.dto.QualityReportPageDto" resultType="com.grainoil.system.domain.vo.quality.QualityReportPageVo">
+    SELECT a.id as applyId, d.id as sampleId,
+           a.apply_code as applyCode, d.sample_code as sampleCode,
+           a.organize_name as organizeName, d.report_code as reportCode,
+           d.batch_code as batchCode,a.grain_depot_name as grainDepotName,
+           d.sampling_time as samplingTime,a.samplers as samplers,
+           d.state as state,d.report_time as reportTime, d.remark as remark FROM tb_quality_apply a INNER JOIN tb_quality_apply_detailed d ON a.id = d.apply_id
+    WHERE a.state = '5'
+    <if test="sampleCode != null">
+      and d.sample_code = #{sampleCode}
+    </if>
+    <if test="applyCode != null">
+      and a.apply_code = #{applyCode}
+    </if>
+    <if test="grainDepotId != null">
+      and a.grain_depot_id = #{grainDepotId}
+    </if>
+    <if test="batchCode != null">
+      and d.batch_code like #{batchCode}
+    </if>
+    <if test="storehouseId != null">
+      and d.storehouse_id = #{storehouseId}
+    </if>
+    <if test="applyStartDate != null">
+      and a.apply_date &gt;= #{applyStartDate}
+    </if>
+    <if test="applyEndDate != null">
+      and a.apply_date &lt;= #{applyEndDate}
+    </if>
+    <if test="organizeId != null">
+      and a.organize_id = #{organizeId}
+    </if>
+  </select>
+
+  <select id="countByExample" parameterType="com.grainoil.system.domain.quality.TbQualityApply" resultType="java.lang.Long">
+    select count(*) from tb_quality_apply
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tb_quality_apply
+    <set>
+      <if test="record.id != null">
+        id = #{record.id},
+      </if>
+      <if test="record.grainOwnerId != null">
+        grain_owner_id = #{record.grainOwnerId},
+      </if>
+      <if test="record.grainOwnerName != null">
+        grain_owner_name = #{record.grainOwnerName},
+      </if>
+      <if test="record.applyType != null">
+        apply_type = #{record.applyType},
+      </if>
+      <if test="record.applyCode != null">
+        apply_code = #{record.applyCode},
+      </if>
+      <if test="record.qualityOrg != null">
+        quality_org = #{record.qualityOrg},
+      </if>
+      <if test="record.organizeId != null">
+        organize_id = #{record.organizeId},
+      </if>
+      <if test="record.organizeName != null">
+        organize_name = #{record.organizeName},
+      </if>
+      <if test="record.applyDate != null">
+        apply_date = #{record.applyDate},
+      </if>
+      <if test="record.samplers != null">
+        samplers = #{record.samplers},
+      </if>
+      <if test="record.grainDepotId != null">
+        grain_depot_id = #{record.grainDepotId},
+      </if>
+      <if test="record.grainDepotName != null">
+        grain_depot_name = #{record.grainDepotName},
+      </if>
+      <if test="record.grainDepotPosition != null">
+        grain_depot_position = #{record.grainDepotPosition},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark},
+      </if>
+      <if test="record.actualSamplingDate != null">
+        actual_sampling_date = #{record.actualSamplingDate},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state},
+      </if>
+      <if test="record.createBy != null">
+        create_by = #{record.createBy},
+      </if>
+      <if test="record.createId != null">
+        create_id = #{record.createId},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime},
+      </if>
+      <if test="record.updateBy != null">
+        update_by = #{record.updateBy},
+      </if>
+      <if test="record.updateId != null">
+        update_id = #{record.updateId},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime},
+      </if>
+      <if test="record.delFlag != null">
+        del_flag = #{record.delFlag},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tb_quality_apply
+    set id = #{record.id},
+      grain_owner_id = #{record.grainOwnerId},
+      grain_owner_name = #{record.grainOwnerName},
+      apply_type = #{record.applyType},
+      apply_code = #{record.applyCode},
+      quality_org = #{record.qualityOrg},
+      organize_id = #{record.organizeId},
+      organize_name = #{record.organizeName},
+      apply_date = #{record.applyDate},
+      samplers = #{record.samplers},
+      grain_depot_id = #{record.grainDepotId},
+      grain_depot_name = #{record.grainDepotName},
+      grain_depot_position = #{record.grainDepotPosition},
+      remark = #{record.remark},
+      actual_sampling_date = #{record.actualSamplingDate},
+      state = #{record.state},
+      create_by = #{record.createBy},
+      create_id = #{record.createId},
+      create_time = #{record.createTime},
+      update_by = #{record.updateBy},
+      update_id = #{record.updateId},
+      update_time = #{record.updateTime},
+      del_flag = #{record.delFlag}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.grainoil.system.domain.quality.TbQualityApply">
+    update tb_quality_apply
+    <set>
+      <if test="grainOwnerId != null">
+        grain_owner_id = #{grainOwnerId},
+      </if>
+      <if test="grainOwnerName != null">
+        grain_owner_name = #{grainOwnerName},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode},
+      </if>
+      <if test="qualityOrg != null">
+        quality_org = #{qualityOrg},
+      </if>
+      <if test="organizeId != null">
+        organize_id = #{organizeId},
+      </if>
+      <if test="organizeName != null">
+        organize_name = #{organizeName},
+      </if>
+      <if test="applyDate != null">
+        apply_date = #{applyDate},
+      </if>
+      <if test="samplers != null">
+        samplers = #{samplers},
+      </if>
+      <if test="grainDepotId != null">
+        grain_depot_id = #{grainDepotId},
+      </if>
+      <if test="grainDepotName != null">
+        grain_depot_name = #{grainDepotName},
+      </if>
+      <if test="grainDepotPosition != null">
+        grain_depot_position = #{grainDepotPosition},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
+      <if test="actualSamplingDate != null">
+        actual_sampling_date = #{actualSamplingDate},
+      </if>
+      <if test="state != null">
+        state = #{state},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.quality.TbQualityApply">
+    update tb_quality_apply
+    set grain_owner_id = #{grainOwnerId},
+      grain_owner_name = #{grainOwnerName},
+      apply_type = #{applyType},
+      apply_code = #{applyCode},
+      quality_org = #{qualityOrg},
+      organize_id = #{organizeId},
+      organize_name = #{organizeName},
+      apply_date = #{applyDate},
+      samplers = #{samplers},
+      grain_depot_id = #{grainDepotId},
+      grain_depot_name = #{grainDepotName},
+      grain_depot_position = #{grainDepotPosition},
+      remark = #{remark},
+      actual_sampling_date = #{actualSamplingDate},
+      state = #{state},
+      create_by = #{createBy},
+      create_id = #{createId},
+      create_time = #{createTime},
+      update_by = #{updateBy},
+      update_id = #{updateId},
+      update_time = #{updateTime},
+      del_flag = #{delFlag}
+    where id = #{id}
+  </update>
+</mapper>

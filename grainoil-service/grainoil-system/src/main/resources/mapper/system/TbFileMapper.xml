@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbFileMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbFile">
+    <id column="file_id" property="fileId" />
+    <result column="file_name" property="fileName" />
+    <result column="file_type" property="fileType" />
+    <result column="file_format" property="fileFormat" />
+    <result column="file_suffix" property="fileSuffix" />
+    <result column="url" property="url" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="upload_sign" property="uploadSign" />
+    <result column="state" property="state" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    file_id, file_name, file_type, file_format, file_suffix, url, create_id, create_by, 
+    create_time, upload_sign, state, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_file
+    where file_id = #{fileId}
+  </select>
+  <insert id="insert" keyColumn="file_id" keyProperty="fileId" parameterType="com.grainoil.system.domain.TbFile" useGeneratedKeys="true">
+    insert into public.tb_file (file_name, file_format, file_suffix, url, create_id, create_by, create_time)
+    values (#{fileName}, #{fileFormat}, #{fileSuffix}, #{url}, #{createId}, #{createBy}, now())
+  </insert>
+  <select id="getFileVo" resultType="com.grainoil.system.domain.vo.FileVo">
+    SELECT file_id fileId, file_name fileName, url FROM public.tb_file WHERE file_id IN (
+      <foreach collection="array" item="item" separator=",">
+        #{item}
+      </foreach>
+    )
+  </select>
+</mapper>

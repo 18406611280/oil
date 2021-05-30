@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbAnnualPlanDepotDetailedMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbAnnualPlanDepotDetailed">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="annual_plan_detailed_id" jdbcType="INTEGER" property="annualPlanDetailedId" />
+    <result column="grain_depot_id" jdbcType="INTEGER" property="grainDepotId" />
+    <result column="grain_depot_name" jdbcType="VARCHAR" property="grainDepotName" />
+    <result column="storehouse_id" jdbcType="INTEGER" property="storehouseId" />
+    <result column="storehouse_name" jdbcType="VARCHAR" property="storehouseName" />
+    <result column="heap_id" jdbcType="INTEGER" property="heapId" />
+    <result column="child_heap_id" jdbcType="INTEGER" property="childHeapId" />
+    <result column="child_heap_code" jdbcType="VARCHAR" property="childHeapCode" />
+    <result column="heap_name" jdbcType="VARCHAR" property="heapName" />
+    <result column="foodstuff_tpye" jdbcType="VARCHAR" property="foodstuffTpye" />
+    <result column="producing_area" jdbcType="VARCHAR" property="producingArea" />
+    <result column="move_in_date" jdbcType="VARCHAR" property="moveInDate" />
+    <result column="stock" jdbcType="DOUBLE" property="stock" />
+    <result column="rotation_quantity" jdbcType="DOUBLE" property="rotationQuantity" />
+    <result column="deposit_type" jdbcType="VARCHAR" property="depositType" />
+    <result column="is_delayed" jdbcType="VARCHAR" property="isDelayed" />
+    <result column="delayed_storage" jdbcType="DOUBLE" property="delayedStorage" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="contract_id" jdbcType="INTEGER" property="contractId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, annual_plan_detailed_id, grain_depot_id, grain_depot_name, storehouse_id, storehouse_name, 
+    heap_id, child_heap_id, child_heap_code, heap_name, foodstuff_tpye, producing_area, 
+    move_in_date, stock, rotation_quantity, deposit_type, is_delayed, delayed_storage, 
+    remark, contract_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_annual_plan_depot_detailed
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.grainoil.system.domain.TbAnnualPlanDepotDetailed" useGeneratedKeys="true">
+    insert into tb_annual_plan_depot_detailed (annual_plan_detailed_id, grain_depot_id, 
+      grain_depot_name, storehouse_id, storehouse_name, 
+      heap_id, child_heap_id, child_heap_code, 
+      heap_name, foodstuff_tpye, producing_area, 
+      move_in_date, stock, rotation_quantity, 
+      deposit_type, is_delayed, delayed_storage, 
+      remark, contract_id)
+    values (#{annualPlanDetailedId,jdbcType=INTEGER}, #{grainDepotId,jdbcType=INTEGER}, 
+      #{grainDepotName,jdbcType=VARCHAR}, #{storehouseId,jdbcType=INTEGER}, #{storehouseName,jdbcType=VARCHAR}, 
+      #{heapId,jdbcType=INTEGER}, #{childHeapId,jdbcType=INTEGER}, #{childHeapCode,jdbcType=VARCHAR}, 
+      #{heapName,jdbcType=VARCHAR}, #{foodstuffTpye,jdbcType=VARCHAR}, #{producingArea,jdbcType=VARCHAR}, 
+      #{moveInDate,jdbcType=VARCHAR}, #{stock,jdbcType=DOUBLE}, #{rotationQuantity,jdbcType=DOUBLE}, 
+      #{depositType,jdbcType=VARCHAR}, #{isDelayed,jdbcType=VARCHAR}, #{delayedStorage,jdbcType=DOUBLE}, 
+      #{remark,jdbcType=VARCHAR}, #{contractId,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbAnnualPlanDepotDetailed">
+    update tb_annual_plan_depot_detailed
+    set annual_plan_detailed_id = #{annualPlanDetailedId,jdbcType=INTEGER},
+      grain_depot_id = #{grainDepotId,jdbcType=INTEGER},
+      grain_depot_name = #{grainDepotName,jdbcType=VARCHAR},
+      storehouse_id = #{storehouseId,jdbcType=INTEGER},
+      storehouse_name = #{storehouseName,jdbcType=VARCHAR},
+      heap_id = #{heapId,jdbcType=INTEGER},
+      child_heap_id = #{childHeapId,jdbcType=INTEGER},
+      child_heap_code = #{childHeapCode,jdbcType=VARCHAR},
+      heap_name = #{heapName,jdbcType=VARCHAR},
+      foodstuff_tpye = #{foodstuffTpye,jdbcType=VARCHAR},
+      producing_area = #{producingArea,jdbcType=VARCHAR},
+      move_in_date = #{moveInDate,jdbcType=VARCHAR},
+      stock = #{stock,jdbcType=DOUBLE},
+      rotation_quantity = #{rotationQuantity,jdbcType=DOUBLE},
+      deposit_type = #{depositType,jdbcType=VARCHAR},
+      is_delayed = #{isDelayed,jdbcType=VARCHAR},
+      delayed_storage = #{delayedStorage,jdbcType=DOUBLE},
+      remark = #{remark,jdbcType=VARCHAR},
+      contract_id = #{contractId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

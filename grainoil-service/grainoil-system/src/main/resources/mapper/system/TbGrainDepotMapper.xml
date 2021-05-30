@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbGrainDepotMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbGrainDepot">
+    <id column="grain_depot_id" property="grainDepotId" />
+    <result column="grain_depot_name" property="grainDepotName" />
+    <result column="grain_depot_shortname" property="grainDepotShortname" />
+    <result column="grain_depot_code" property="grainDepotCode" />
+    <result column="create_year" property="createYear" />
+    <result column="grain_depot_province" property="grainDepotProvince" />
+    <result column="grain_depot_city" property="grainDepotCity" />
+    <result column="grain_depot_region" property="grainDepotRegion" />
+    <result column="grain_depot_longitude" property="grainDepotLongitude" />
+    <result column="grain_depot_latitude" property="grainDepotLatitude" />
+    <result column="grain_depot_state" property="grainDepotState" />
+    <result column="grain_depot_img" property="grainDepotImg" />
+    <result column="grain_depot_capacity" property="grainDepotCapacity" />
+    <result column="granary_oil_size" property="granaryOilSize" />
+    <result column="grain_depot_position" property="grainDepotPosition" />
+    <result column="belong_id" property="belongId" />
+    <result column="belong_name" property="belongName" />
+    <result column="center_id" property="centerId" />
+    <result column="remark" property="remark" />
+    <result column="start_time" property="startTime" />
+    <result column="block_up_time" property="blockUpTime" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    grain_depot_id, grain_depot_name, grain_depot_shortname, grain_depot_code, create_year, grain_depot_province,
+    grain_depot_city, grain_depot_region, grain_depot_longitude, grain_depot_latitude,
+    grain_depot_state, grain_depot_img, grain_depot_capacity, granary_oil_size, grain_depot_position,
+    belong_id, belong_name, center_id, remark, start_time, block_up_time, del_flag, create_id,
+    create_by, create_time, update_id, update_by, update_time
+  </sql>
+  <sql id="Base_Column_List2">
+      grain_depot_id, grain_depot_name, grain_depot_shortname, grain_depot_code, create_year, grain_depot_province,
+      grain_depot_city, grain_depot_region, grain_depot_longitude, grain_depot_latitude,
+      grain_depot_state , grain_depot_img, grain_depot_capacity, granary_oil_size, grain_depot_position,
+      belong_id, belong_name, center_id, remark, start_time, block_up_time, del_flag, create_id,
+      create_by, create_time, update_id, update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from public.tb_grain_depot
+    where grain_depot_id = #{grainDepotId} and del_flag = '0'
+  </select>
+  <insert id="insert" keyColumn="grain_depot_id" keyProperty="grainDepotId" parameterType="com.grainoil.system.domain.TbGrainDepot" useGeneratedKeys="true">
+    insert into public.tb_grain_depot (grain_depot_name, grain_depot_code, grain_depot_region, grain_depot_longitude, grain_depot_latitude,
+      grain_depot_state, grain_depot_capacity, grain_depot_position, belong_id,
+      belong_name, center_id, remark, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+    values (#{record.grainDepotName}, #{record.grainDepotCode}, #{record.grainDepotRegion}, #{record.grainDepotLongitude}, #{record.grainDepotLatitude},
+      '0', #{record.grainDepotCapacity}, #{record.grainDepotPosition}, #{record.belongId}, #{record.belongName}, #{record.centerId}, #{record.remark}, '0', #{currentUser.currentId},
+      #{currentUser.currentName}, now(), #{currentUser.currentId}, #{currentUser.currentName}, now())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.vo.point_management.GrainDepotUpdate">
+    update public.tb_grain_depot
+    set grain_depot_name = #{record.grainDepotName},
+      grain_depot_code = #{record.grainDepotCode},
+      grain_depot_region = #{record.grainDepotRegion},
+      grain_depot_longitude = #{record.grainDepotLongitude},
+      grain_depot_latitude = #{record.grainDepotLatitude},
+      grain_depot_capacity = #{record.grainDepotCapacity},
+      grain_depot_position = #{record.grainDepotPosition},
+      belong_id = #{record.belongId},
+      belong_name = #{record.belongName},
+      center_id = #{record.centerId},
+      remark = #{record.remark},
+      update_id = #{currentUser.currentId},
+      update_by = #{currentUser.currentName},
+      update_time = now()
+    where grain_depot_id = #{record.grainDepotId} and del_flag = '0' and grain_depot_state = '0'
+  </update>
+
+
+
+  <select id="count" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_grain_depot WHERE (grain_depot_name = #{grainDepotName} OR grain_depot_code = #{grainDepotCode}) AND del_flag = '0'
+  </select>
+  <select id="list" resultType="GrainDepotListVo">
+    SELECT t.* FROM
+    (
+      SELECT <include refid="Base_Column_List2" />, '我的' type FROM public.tb_grain_depot WHERE del_flag = '0' AND belong_id = #{organizeId}
+      UNION
+      SELECT <include refid="Base_Column_List2" />, '代储' type FROM public.tb_grain_depot WHERE del_flag = '0' AND belong_id != #{organizeId}
+      AND grain_depot_id IN (SELECT store_id FROM public.tb_company_storage WHERE store_type = '1' AND del_flag = '0' AND organize_id = #{organizeId})
+    ) t WHERE 1=1
+    <if test="depot.grainDepotId !=null">
+      AND t.grain_depot_id = #{depot.grainDepotId}
+    </if>
+    <if test="depot.belongId != null">
+      AND t.grain_depot_id IN (SELECT tgd2.grain_depot_id FROM public.tb_grain_depot tgd2 LEFT JOIN public.tb_company_storage tcs2 ON tcs2.store_id = tgd2.grain_depot_id AND tcs2.store_type = '1' AND tcs2.del_flag = '0'
+      WHERE tgd2.del_flag = '0' AND tcs2.organize_id = #{depot.belongId})
+    </if>
+    ORDER BY t.create_time
+  </select>
+  <select id="select" resultType="GrainDepotListVo">
+    SELECT tgd.grain_depot_id, tgd.grain_depot_name, tgd.belong_name, tgd.grain_depot_capacity, tgd.grain_depot_state, group_concat(to2.organize_name) useName
+    FROM public.tb_grain_depot tgd  LEFT JOIN public.tb_company_storage tcs ON tgd.grain_depot_id = tcs.store_id AND tcs.del_flag = '0' AND tcs.store_type = '1'
+    LEFT JOIN public.tb_organize to2 ON to2.del_flag = '0' AND to2.organize_state = '0' AND tcs.organize_id = to2.organize_id
+    WHERE tgd.del_flag = '0'
+    <if test="organizeId != null">
+      AND tgd.center_id = #{organizeId}
+    </if>
+    <if test="depot.grainDepotId !=null">
+      AND tgd.grain_depot_id = #{depot.grainDepotId}
+    </if>
+    <if test="depot.belongId != null">
+      AND tgd.grain_depot_id IN (SELECT tgd2.grain_depot_id FROM public.tb_grain_depot tgd2 LEFT JOIN public.tb_company_storage tcs2 ON tcs2.store_id = tgd2.grain_depot_id AND tcs2.store_type = '1' AND tcs2.del_flag = '0'
+            WHERE tgd2.del_flag = '0' AND tcs2.organize_id = #{depot.belongId})
+    </if>
+    GROUP BY tgd.grain_depot_id
+    ORDER BY tgd.create_time
+  </select>
+  <select id="judge" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_grain_depot WHERE del_flag = '0' AND grain_depot_state = '0' AND grain_depot_id = #{grainDepotId}
+  </select>
+  <select id="getRelation" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_grain_depot WHERE grain_depot_id = #{grainDepotId} AND belong_id = #{organizeId} AND del_flag = '0'
+  </select>
+  <select id="getGrainDepots" resultType="java.util.Map">
+    SELECT grain_depot_id, grain_depot_name FROM public.tb_grain_depot WHERE del_flag = '0'
+  </select>
+  <select id="checkContract" resultType="TbGrainDepot">
+    SELECT grain_depot_id, grain_depot_name FROM public.tb_grain_depot
+    WHERE del_flag = '0' AND grain_depot_state = '0' AND grain_depot_id IN (
+      <foreach collection="collection" separator="," item="item">
+        #{item}
+      </foreach>
+    )
+  </select>
+  <select id="getContractRelation" resultType="java.util.Map">
+    SELECT tgd.grain_depot_id, to2.organize_id, to2.organize_name
+    FROM public.tb_grain_depot tgd LEFT JOIN public.tb_organize to2 ON tgd.center_id = to2.organize_id
+    WHERE tgd.del_flag = '0' AND to2.del_flag = '0' AND tgd.grain_depot_state = '0' AND to2.organize_state = '0' AND tgd.grain_depot_id IN (
+      <foreach collection="collection" separator="," item="item">
+        #{item}
+      </foreach>
+    )
+  </select>
+  <select id="getStorageDetailList" resultType="java.util.Map">
+    SELECT tgd.grain_depot_id, tgd.grain_depot_name, to2.organize_name
+    FROM public.tb_grain_depot tgd LEFT JOIN public.tb_organize to2 ON to2.organize_id = tgd.belong_id
+    WHERE tgd.del_flag = '0' AND to2.del_flag = '0' AND tgd.grain_depot_state = '0' AND to2.organize_state = '0'
+    <if test="id != 0">
+      AND tgd.grain_depot_id = #{id}
+    </if>
+  </select>
+  <update id="update">
+    UPDATE public.tb_grain_depot SET grain_depot_latitude = #{depot.grainDepotLatitude}, grain_depot_longitude = #{depot.grainDepotLongitude},
+    grain_depot_capacity = #{depot.grainDepotCapacity}, grain_depot_position = #{depot.grainDepotPosition}, remark = #{depot.remark},
+    update_id = #{currentUser.currentId}, update_by = #{currentUser.currentName}, update_time = now()
+    WHERE del_flag = '0' AND grain_depot_state = '0' AND grain_depot_id = #{depot.grainDepotId}
+  </update>
+  <select id="countUpdate" resultType="Integer">
+    SELECT count(1) FROM public.tb_grain_depot WHERE (grain_depot_name = #{grainDepotName} OR grain_depot_code = #{grainDepotCode}) AND del_flag = '0'
+    AND grain_depot_id != #{grainDepotId}
+  </select>
+  <select id="checkGrainDepotToOrganize" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_grain_depot WHERE del_flag = '0' AND grain_depot_id = #{grainDepotId} AND center_id = #{organizeId}
+  </select>
+  <select id="getGrainDepotList" resultType="LeafNode">
+    SELECT grain_depot_id value, grain_depot_name label FROM public.tb_grain_depot WHERE del_flag = '0' AND center_id = #{organizeId}
+  </select>
+</mapper>

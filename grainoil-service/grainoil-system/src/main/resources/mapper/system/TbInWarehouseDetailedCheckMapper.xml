@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbInWarehouseDetailedCheckMapper">
+  <resultMap id="BaseResultMap" type="com.grainoil.system.domain.TbInWarehouseDetailedCheck">
+    <id column="id" property="id" />
+    <result column="type" property="type" />
+    <result column="in_or_out_id" property="inOrOutId" />
+    <result column="approval_state" property="approvalState" />
+    <result column="approval_id" property="approvalId" />
+    <result column="approval_name" property="approvalName" />
+    <result column="approval_time" property="approvalTime" />
+    <result column="approval_result" property="approvalResult" />
+    <result column="approval_opinion" property="approvalOpinion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, in_or_out_id, approval_state, approval_id, approval_name, approval_time, approval_result, approval_opinion
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_in_warehouse_detailed_check
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_in_warehouse_detailed_check
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com.grainoil.system.domain.TbInWarehouseDetailedCheck">
+    insert into public.tb_in_warehouse_detailed_check (type, in_or_out_id, approval_state,
+      approval_id, approval_name, approval_time, approval_result, approval_opinion)
+    values (#{inWarehouse.warehousingType}, #{approveDto.id}, #{approveDto.result},
+      #{currentUser.currentId}, #{currentUser.currentName}, now(), #{approveDto.result}, #{approveDto.idea})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbInWarehouseDetailedCheck">
+    update tb_in_warehouse_detailed_check
+    set type = #{type},
+      in_or_out_id = #{inOrOutId},
+      approval_state = #{approvalState},
+      approval_id = #{approvalId},
+      approval_time = #{approvalTime},
+      approval_result = #{approvalResult},
+      approval_opinion = #{approvalOpinion}
+    where id = #{id}
+  </update>
+  <insert id="insertTrue">
+    insert into public.tb_in_warehouse_detailed_check (type, in_or_out_id, approval_state,
+    approval_id, approval_name, approval_time, approval_result, approval_opinion)
+    values
+    <foreach collection="auditDto.ids" separator="," item="item">
+      (#{type}, #{item}, #{auditDto.result},
+      #{currentUser.currentId}, #{currentUser.currentName}, now(), #{auditDto.result}, #{auditDto.idea})
+    </foreach>
+  </insert>
+  <delete id="batchDelete">
+    DELETE FROM tb_in_warehouse_detailed_check WHERE id IN (
+      <foreach collection="deletes" item="item" separator=",">
+        #{item}
+      </foreach>
+    )
+  </delete>
+</mapper>

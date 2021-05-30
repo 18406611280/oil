@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grainoil.system.mapper.TbOrganizeMapper">
+  <resultMap id="BaseResultMap" type="TbOrganize">
+    <id column="organize_id" property="organizeId" />
+    <result column="organize_name" property="organizeName" />
+    <result column="organize_code" property="organizeCode" />
+    <result column="organize_credit_code" property="organizeCreditCode" />
+    <result column="organize_property" property="organizeProperty" />
+    <result column="organize_position" property="organizePosition" />
+    <result column="organize_province" property="organizeProvince" />
+    <result column="organize_city" property="organizeCity" />
+    <result column="organize_region" property="organizeRegion" />
+    <result column="organize_longitude" property="organizeLongitude" />
+    <result column="organize_latitude" property="organizeLatitude" />
+    <result column="organize_state" property="organizeState" />
+    <result column="organize_note" property="organizeNote" />
+    <result column="organize_type" property="organizeType" />
+    <result column="organize_admin" property="organizeAdmin" />
+    <result column="organize_person" property="organizePerson" />
+    <result column="organize_phonenumber" property="organizePhonenumber" />
+    <result column="organize_img" property="organizeImg" />
+    <result column="organize_attachment_id" property="organizeAttachmentId" />
+    <result column="parent_id" property="parentId" />
+    <result column="parents" property="parents" />
+    <result column="is_select" property="isSelect" />
+    <result column="remark" property="remark" />
+    <result column="del_flag" property="delFlag" />
+    <result column="create_id" property="createId" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="update_id" property="updateId" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_time" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+      organize_id, organize_name, organize_code, organize_credit_code, organize_property,
+      organize_position, organize_province, organize_city, organize_region, organize_longitude,
+      organize_latitude, organize_state, organize_note, organize_type, organize_admin,
+      organize_person, organize_phonenumber, organize_img, organize_attachment_id, parent_id,
+      parents, is_select, remark, del_flag, create_id, create_by, create_time, update_id,
+      update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PUBLIC.tb_organize
+    where organize_id = #{organizeId} and del_flag = '0' and organize_state = '0'
+  </select>
+  <insert id="insert" keyColumn="organize_id" keyProperty="organizeId" parameterType="com.grainoil.system.domain.TbOrganize" useGeneratedKeys="true">
+    insert into tb_organize (organize_name, organize_code, organize_credit_code,
+    organize_property, organize_position, organize_province,
+    organize_city, organize_region, organize_longitude,
+    organize_latitude, organize_state, organize_note,
+    organize_type, organize_admin, organize_person,
+    organize_phonenumber, organize_img, organize_attachment_id,
+    parent_id, parents, is_select,
+    remark, del_flag, create_id,
+    create_by, create_time, update_id,
+    update_by, update_time)
+    values (#{organizeName,jdbcType=VARCHAR}, #{organizeCode,jdbcType=VARCHAR}, #{organizeCreditCode,jdbcType=VARCHAR},
+    #{organizeProperty,jdbcType=VARCHAR}, #{organizePosition,jdbcType=VARCHAR}, #{organizeProvince,jdbcType=VARCHAR},
+    #{organizeCity,jdbcType=VARCHAR}, #{organizeRegion,jdbcType=VARCHAR}, #{organizeLongitude,jdbcType=DOUBLE},
+    #{organizeLatitude,jdbcType=DOUBLE}, #{organizeState,jdbcType=CHAR}, #{organizeNote,jdbcType=VARCHAR},
+    #{organizeType,jdbcType=VARCHAR}, #{organizeAdmin,jdbcType=VARCHAR}, #{organizePerson,jdbcType=VARCHAR},
+    #{organizePhonenumber,jdbcType=CHAR}, #{organizeImg,jdbcType=INTEGER}, #{organizeAttachmentId,jdbcType=INTEGER},
+    #{parentId,jdbcType=INTEGER}, #{parents,jdbcType=VARCHAR}, #{isSelect,jdbcType=CHAR},
+    #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR}, #{createId,jdbcType=INTEGER},
+    #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=INTEGER},
+    #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.grainoil.system.domain.TbOrganize">
+    update tb_organize
+    set organize_name = #{organizeName,jdbcType=VARCHAR},
+      organize_code = #{organizeCode,jdbcType=VARCHAR},
+      organize_position = #{organizePosition,jdbcType=VARCHAR},
+      organize_region = #{organizeRegion,jdbcType=INTEGER},
+      organize_longitude = #{organizeLongitude,jdbcType=DOUBLE},
+      organize_latitude = #{organizeLatitude,jdbcType=DOUBLE},
+      organize_state = #{organizeState,jdbcType=INTEGER},
+      organize_img = #{organizeImg,jdbcType=INTEGER},
+      organize_note = #{organizeNote,jdbcType=INTEGER},
+      organize_type = #{organizeType,jdbcType=INTEGER},
+      organize_admin = #{organizeAdmin,jdbcType=VARCHAR},
+      organize_person = #{organizePerson,jdbcType=VARCHAR},
+      organize_phonenumber = #{organizePhonenumber,jdbcType=CHAR},
+      organize_attachment_id = #{organizeAttachmentId,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=CHAR},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where organize_id = #{organizeId,jdbcType=INTEGER}
+  </update>
+
+
+
+
+  <select id="list" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List"/> FROM PUBLIC.tb_organize WHERE del_flag = '0'
+    AND (organize_id = #{organizeId} OR parent_id = #{organizeId})
+    <if test="organizeType != null and organizeType != ''">
+      AND organize_type = #{organizeType}
+    </if>
+    <if test="organizeName != null and organizeName != ''">
+      AND organize_name LIKE concat('%', #{organizeName}, '%')
+    </if>
+  </select>
+  <select id="getTree" resultType="com.grainoil.system.domain.TbOrganize">
+    SELECT organize_id, parent_id, organize_name FROM public.tb_organize WHERE del_flag = '0'
+    <if test="organizeId != null and organizeId != ''">
+      AND (organize_id = #{organizeId} OR find_in_set(#{organizeId}, parents) > 0)
+    </if>
+  </select>
+  <select id="selectTypeById" resultType="java.lang.String">
+    SELECT * FROM tb_organize
+  </select>
+  <select id="getTypeById" resultType="java.lang.String">
+    SELECT organize_type FROM public.tb_organize WHERE organize_id = #{id} AND organize_state = '0' AND del_flag = '0'
+  </select>
+  <select id="getParents" resultType="java.util.Map">
+    SELECT parents, organize_state, del_flag FROM public.tb_organize WHERE organize_id = #{parentId}
+  </select>
+  <select id="checkIdAndName" resultType="java.lang.Integer">
+    SELECT count(1) FROM public.tb_organize WHERE del_flag = '0' AND organize_state = '0' AND organize_id = #{belongId} AND organize_name = #{belongName}
+  </select>
+  <select id="findTypeById" resultType="java.lang.String">
+    SELECT organize_type FROM public.tb_organize WHERE del_flag = '0' AND organize_state = '0' AND organize_id = #{organizeId}
+  </select>
+  <select id="getIdByRegion" resultType="java.lang.Long">
+    SELECT to1.organize_id FROM public.tb_organize to1 LEFT JOIN public.tb_organize to2 ON to1.parent_id = to2.organize_id AND to2.del_flag = '0' AND to2.organize_state = '0'
+    WHERE to1.del_flag = '0' AND to1.organize_state = '0' AND to2.organize_type = '1' AND to1.organize_type = '2' AND to1.organize_region = #{region}
+  </select>
+  <select id="getRegionIdById" resultType="java.lang.Long">
+    SELECT organize_id FROM public.tb_organize
+    WHERE organize_id IN (
+      <foreach collection="array" item="item" separator=",">
+        #{item}
+      </foreach>
+    ) AND parents = parent_id AND parent_id IS NOT NULL AND del_flag = '0' AND organize_state = '0'
+  </select>
+  <select id="getRegionById" resultType="java.lang.String">
+    SELECT organize_region FROM public.tb_organize WHERE del_flag = '0' AND organize_id = #{organizeId}
+  </select>
+    <select id="getSelect" resultType="java.util.Map">
+      SELECT organize_id, organize_name FROM public.tb_organize WHERE del_flag = '0' AND organize_type = '5' AND organize_state = '0' AND parent_id IS NULL
+    </select>
+  <select id="getCenter" resultType="java.util.Map">
+    SELECT to2.organize_id, to2.organize_name
+    FROM tb_organize to2 LEFT JOIN tb_organize to3 ON to3.organize_id = to2.parent_id
+    WHERE to2.del_flag = '0' AND to2.organize_state = '0' AND to2.organize_type = '2' AND to3.organize_type = '1' AND to3.organize_state = '0' AND to3.del_flag = '0'
+  </select>
+  <select id="select" resultType="com.grainoil.system.domain.TbOrganize">
+    select
+    <include refid="Base_Column_List" />
+    from public.tb_organize
+    where organize_id = #{organizeId} and del_flag = '0' and organize_state = '0' and organize_type = #{type}
+  </select>
+    <select id="getNamebyIds" resultType="java.lang.String">
+      SELECT organize_name FROM public.tb_organize WHERE del_flag = '0' AND organize_state = '0' AND organize_id IN (
+        <foreach collection="list" item="item" separator=",">
+          #{item}
+        </foreach>
+      )
+    </select>
+  <select id="getNote" resultType="java.lang.String">
+    SELECT tdd.dict_label FROM public.tb_organize to2 LEFT JOIN public.tb_dict_data tdd ON to2.organize_note = tdd.dict_value AND tdd.dict_type = 23 AND tdd.status = '0'
+    WHERE to2.del_flag = '0' AND to2.organize_state = '0' AND organize_id = #{organizeId}
+  </select>
+</mapper>
